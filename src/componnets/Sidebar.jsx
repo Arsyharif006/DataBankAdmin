@@ -6,27 +6,22 @@ import {
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
   Accordion,
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { FaChevronDown} from 'react-icons/fa';
-import { MdOutlineDashboard,MdOutlineSchool,MdOutlineInsertChart } from "react-icons/md";
+import { FaChevronDown } from 'react-icons/fa';
+import { MdOutlineDashboard, MdOutlineSchool, MdOutlineInsertChart } from "react-icons/md";
 import { RiSchoolLine } from "react-icons/ri";
-import { HiOutlineUserGroup,HiOutlineLogout } from "react-icons/hi";
+import { HiOutlineUserGroup, HiOutlineLogout } from "react-icons/hi";
 import { LuUserCog } from "react-icons/lu";
-
-
-
-
 
 const menus = [
   {
     title: "Dashboard",
     icon: <MdOutlineDashboard />,
     link: "/dashboard",
-    margin:true
+    margin: true
   },
   { title: "Akun", icon: <LuUserCog />, link: "/akun" },
   {
@@ -39,8 +34,7 @@ const menus = [
   },
   {
     title: "Manajemen Sekolah ",
-    icon: <RiSchoolLine />
-    ,
+    icon: <RiSchoolLine />,
     items: [
       { name: "Data Extrakulikuler", link: "/extrakulikuler" },
       { name: "Data Mata Pelajaran", link: "/matapelajaran" },
@@ -50,7 +44,7 @@ const menus = [
   },
   {
     title: "Manajemen Siswa ",
-    icon: <MdOutlineSchool  />,
+    icon: <MdOutlineSchool />,
     items: [
       { name: "Data Administrasi", link: "/administrasi" },
       { name: "Data Kehadiran", link: "/kehadiran" },
@@ -72,7 +66,7 @@ export function Sidebar() {
   const isActive = (link) => location.pathname === link;
 
   return (
-    <Card className="max-w-[17rem] p-1 shadow-xl h-screen">
+    <Card className="max-w-[19rem] p-1 shadow-xl h-screen overflow-y-auto">
       <div className="mb-2 flex items-center gap-4 p-4">
         <img src="https://docs.material-tailwind.com/img/logo-ct-dark.png" alt="brand" className="h-8 w-8" />
         <Typography variant="h5" color="blue-gray">
@@ -121,7 +115,6 @@ export function Sidebar() {
                   {menu.icon}
                 </ListItemPrefix>
                 {menu.title}
-                {menu.suffix && <ListItemSuffix>{menu.suffix}</ListItemSuffix>}
               </ListItem>
             </Link>
           )
