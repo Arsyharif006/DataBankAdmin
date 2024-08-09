@@ -11,41 +11,54 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { FaChevronDown } from 'react-icons/fa';
-import { MdOutlineDashboard, MdOutlineDataset } from "react-icons/md";
-import { BiData } from "react-icons/bi";
-import { GoReport } from "react-icons/go";
-import { AiOutlineLogout, AiOutlineDatabase } from "react-icons/ai";
-import { RiCalendarScheduleLine } from "react-icons/ri";
+import { FaChevronDown} from 'react-icons/fa';
+import { MdOutlineDashboard,MdOutlineSchool,MdOutlineInsertChart } from "react-icons/md";
+import { RiSchoolLine } from "react-icons/ri";
+import { HiOutlineUserGroup,HiOutlineLogout } from "react-icons/hi";
+import { LuUserCog } from "react-icons/lu";
+
+
+
+
 
 const menus = [
   {
     title: "Dashboard",
     icon: <MdOutlineDashboard />,
     link: "/dashboard",
-    margin: true,
+    margin:true
   },
+  { title: "Akun", icon: <LuUserCog />, link: "/akun" },
   {
-    title: "Data Akun",
-    icon: <BiData />,
+    title: "Manajemen Personal",
+    icon: <HiOutlineUserGroup />,
     items: [
       { name: "Data Guru", link: "/dataguru" },
       { name: "Data Siswa", link: "/datasiswa" },
     ],
   },
   {
+    title: "Manajemen Sekolah ",
+    icon: <RiSchoolLine />
+    ,
+    items: [
+      { name: "Data Extrakulikuler", link: "/extrakulikuler" },
+      { name: "Data Mata Pelajaran", link: "/matapelajaran" },
+      { name: "Data Jurusan", link: "/jurusan" },
+      { name: "Data Ruangan", link: "/ruangan" },
+    ],
+  },
+  {
     title: "Manajemen Siswa ",
-    icon: <AiOutlineDatabase />,
+    icon: <MdOutlineSchool  />,
     items: [
       { name: "Data Administrasi", link: "/administrasi" },
       { name: "Data Kehadiran", link: "/kehadiran" },
       { name: "Data Nilai", link: "/nilai" },
     ],
   },
-  { title: "Jurusan", icon: <MdOutlineDataset />, link: "/jurusan" },
-  { title: "Jadwal", icon: <RiCalendarScheduleLine />, link: "/jadwal" },
-  { title: "Report", icon: <GoReport />, link: "/report" },
-  { title: "Log Out", icon: <AiOutlineLogout />, link: "/logout" },
+  { title: "Report", icon: <MdOutlineInsertChart />, link: "/report" },
+  { title: "Log Out", icon: <HiOutlineLogout />, link: "/logout" },
 ];
 
 export function Sidebar() {
@@ -59,7 +72,7 @@ export function Sidebar() {
   const isActive = (link) => location.pathname === link;
 
   return (
-    <Card className="max-w-[20rem] p-4 shadow-xl h-screen">
+    <Card className="max-w-[17rem] p-1 shadow-xl h-screen">
       <div className="mb-2 flex items-center gap-4 p-4">
         <img src="https://docs.material-tailwind.com/img/logo-ct-dark.png" alt="brand" className="h-8 w-8" />
         <Typography variant="h5" color="blue-gray">
@@ -80,7 +93,7 @@ export function Sidebar() {
             >
               <ListItem className='p-0' selected={open === index + 1}>
                 <AccordionHeader onClick={() => handleOpen(index + 1)} className="border-b-0 p-3 mr-3">
-                  <ListItemPrefix className="text-[20px]">
+                  <ListItemPrefix className="text-[20px] pr-2">
                     {menu.icon}
                   </ListItemPrefix>
                   <Typography color="blue-gray" className="mr-auto font-normal">
@@ -92,7 +105,7 @@ export function Sidebar() {
                 <List className="p-0 ">
                   {menu.items.map((item, idx) => (
                     <Link to={item.link} key={idx}>
-                      <ListItem className={`pl-8 hover:bg-gray-500 hover:text-white transition duration-300 mb-1 ${isActive(item.link) ? 'bg-gray-600 rounded-lg text-white' : ''}`}>
+                      <ListItem className={`pl-10 hover:bg-gray-500 hover:text-white transition duration-300 mb-1 ${isActive(item.link) ? 'bg-gray-600 rounded-lg text-white' : ''}`}>
                         <ListItemPrefix />
                         {item.name}
                       </ListItem>
@@ -104,7 +117,7 @@ export function Sidebar() {
           ) : (
             <Link to={menu.link} key={index}>
               <ListItem className={`hover:bg-gray-500 hover:text-white transition duration-300 mb-1 ${isActive(menu.link) ? 'bg-gray-600 rounded-lg text-white' : ''} ${menu.margin ? 'mb-3' : ''}`}>
-                <ListItemPrefix className="text-[20px]">
+                <ListItemPrefix className="text-[20px] pr-2">
                   {menu.icon}
                 </ListItemPrefix>
                 {menu.title}
