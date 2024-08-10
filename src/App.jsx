@@ -6,8 +6,6 @@ const App = () => {
   return (
     <>
       <Sidebar/>
-    <div className="bg-slate-700">
-    </div>
     </>
   )
 }
