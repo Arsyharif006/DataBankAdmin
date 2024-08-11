@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Card,
@@ -21,7 +21,7 @@ const menus = [
     title: "Dashboard",
     icon: <MdOutlineDashboard />,
     link: "/dashboard",
-    margin: true
+    margin: true,
   },
   { title: "Akun", icon: <LuUserCog />, link: "/akun" },
   {
@@ -33,22 +33,14 @@ const menus = [
     ],
   },
   {
-    title: "Manajemen Sekolah ",
+    title: "Manajemen Sekolah",
     icon: <RiSchoolLine />,
     items: [
       { name: "Data Extrakulikuler", link: "/extrakulikuler" },
       { name: "Data Mata Pelajaran", link: "/matapelajaran" },
-      { name: "Data Jurusan", link: "/jurusan" },
       { name: "Data Ruangan", link: "/ruangan" },
-    ],
-  },
-  {
-    title: "Manajemen Siswa ",
-    icon: <MdOutlineSchool />,
-    items: [
-      { name: "Data Administrasi", link: "/administrasi" },
-      { name: "Data Kehadiran", link: "/kehadiran" },
-      { name: "Data Nilai", link: "/nilai" },
+      { name: "Data Jurusan", link: "/jurusan" },
+      { name: "Data Kelas", link: "/kelas" },
     ],
   },
   { title: "Report", icon: <MdOutlineInsertChart />, link: "/report" },
@@ -56,24 +48,37 @@ const menus = [
 ];
 
 export function Sidebar() {
-  const [open, setOpen] = React.useState(0);
+  const [open, setOpen] = React.useState(null);
   const location = useLocation();
 
+  useEffect(() => {
+    // Determine if the current location path is within a submenu and open the corresponding accordion
+    menus.forEach((menu, index) => {
+      if (menu.items) {
+        menu.items.forEach((item) => {
+          if (location.pathname.includes(item.link)) {
+            setOpen(index + 1);
+          }
+        });
+      }
+    });
+  }, [location.pathname]);
+
   const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
+    setOpen(open === value ? null : value);
   };
 
   const isActive = (link) => location.pathname === link;
 
   return (
-    <Card className="max-w-[19rem] p-1 shadow-xl h-screen overflow-y-auto">
+    <Card className="min-h-screen p-2 shadow-xl flex-grow">
       <div className="mb-2 flex items-center gap-4 p-4">
         <img src="https://docs.material-tailwind.com/img/logo-ct-dark.png" alt="brand" className="h-8 w-8" />
         <Typography variant="h5" color="blue-gray">
           Data Bank <br />Smkn 1 Ciomas
         </Typography>
       </div>
-      <List>
+      <List className="flex flex-col">
         {menus.map((menu, index) => (
           menu.items ? (
             <Accordion
@@ -95,18 +100,19 @@ export function Sidebar() {
                   </Typography>
                 </AccordionHeader>
               </ListItem>
-              <AccordionBody className="py-1">
-                <List className="p-0 ">
-                  {menu.items.map((item, idx) => (
-                    <Link to={item.link} key={idx}>
-                      <ListItem className={`pl-10 hover:bg-gray-500 hover:text-white transition duration-300 mb-1 ${isActive(item.link) ? 'bg-gray-600 rounded-lg text-white' : ''}`}>
-                        <ListItemPrefix />
-                        {item.name}
-                      </ListItem>
-                    </Link>
-                  ))}
-                </List>
-              </AccordionBody>
+              {open === index + 1 && (
+                <AccordionBody className="py-1">
+                  <List className="p-0">
+                    {menu.items.map((item, idx) => (
+                      <Link to={item.link} key={idx}>
+                        <ListItem className={`pl-10 hover:bg-gray-500 hover:text-white transition duration-300 mb-1 ${isActive(item.link) ? 'bg-gray-600 rounded-lg text-white' : ''}`}>
+                          {item.name}
+                        </ListItem>
+                      </Link>
+                    ))}
+                  </List>
+                </AccordionBody>
+              )}
             </Accordion>
           ) : (
             <Link to={menu.link} key={index}>

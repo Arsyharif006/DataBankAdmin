@@ -1,11 +1,15 @@
 import React from 'react'
-import { Router,Route } from 'react-router-dom'
-import Sidebar from './componnets/Sidebar';
+import AccountTable from './pages/Account';
+import Dashboard from './pages/Dashboard';
+import TeacherData from './pages/PersonalData/TeacherData';
 
 const App = () => {
   return (
     <>
-      <Sidebar/>
+    <div className="flex">
+      <Dashboard/>
+
+    </div>
     </>
   )
 }
