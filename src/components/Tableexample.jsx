@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
-import Pagination from '../components/Pagination'; 
+import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
+import Pagination from '../../components/Pagination'; 
+import Sidebar from '../../components/Sidebar';
+// You'll need to install 'xlsx' library: npm install xlsx
+import * as XLSX from 'xlsx';
 
-const aa = () => {
+const aaa = () => {
   const [data, setData] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com', password: '123456', date: '2024-08-11' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', password: 'abcdef', date: '2024-07-20' },
-    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', password: 'password', date: '2024-05-05' },
+    { id: 1, name: 'John Doe', nisn: '349234234', email: 'john@example.com', phone: '08783233423', classId: '12 PPLG 1' },
+    // Add more students as needed
   ]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
+  
+
   const itemsPerPage = 5;
 
   const sortData = (key) => {
@@ -21,12 +25,7 @@ const aa = () => {
       sortedData.reverse();
       setSortConfig({ key, direction: 'descending' });
     } else {
-      sortedData.sort((a, b) => {
-        if (key === 'date') {
-          return new Date(a[key]) > new Date(b[key]) ? 1 : -1;
-        }
-        return a[key] > b[key] ? 1 : -1;
-      });
+      sortedData.sort((a, b) => (a[key] > b[key] ? 1 : -1));
       setSortConfig({ key, direction: 'ascending' });
     }
     setData(sortedData);
@@ -40,9 +39,9 @@ const aa = () => {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prevSelected => {
+    setSelectedIds((prevSelected) => {
       if (prevSelected.includes(id)) {
-        return prevSelected.filter(selectedId => selectedId !== id);
+        return prevSelected.filter((selectedId) => selectedId !== id);
       } else {
         return [...prevSelected, id];
       }
@@ -50,26 +49,57 @@ const aa = () => {
   };
 
   const deleteSelected = () => {
-    setData(data.filter(item => !selectedIds.includes(item.id)));
+    setData(data.filter((item) => !selectedIds.includes(item.id)));
     setSelectedIds([]);
   };
 
   const deleteAccount = (id) => {
-    setData(data.filter(item => item.id !== id));
+    setData(data.filter((item) => item.id !== id));
   };
 
   const editAccount = (id) => {
-    // Implement edit functionality here
     alert(`Editing account with id: ${id}`);
+  };
+
+  const handlePageChange = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
+
+  // Import data from Excel
+  const importData = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const binaryStr = e.target.result;
+      const workbook = XLSX.read(binaryStr, { type: 'binary' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const importedData = XLSX.utils.sheet_to_json(worksheet);
+      const formattedData = importedData.map((item, index) => ({
+        id: data.length + index + 1,
+        name: item.Name || '',
+        nisn: item.Nisn || '',
+        email: item.Email || '',
+        phone: item.Phone || '',
+        classId: item.Class || '',
+      }));
+      setData([...data, ...formattedData]);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  // Export data to Excel
+  const exportData = () => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Students');
+    XLSX.writeFile(wb, 'students.xlsx');
   };
 
   const filteredData = data.filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handlePageChange = ({ selected }) => {
-    setCurrentPage(selected);
-  };
 
   const offset = currentPage * itemsPerPage;
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
@@ -77,9 +107,11 @@ const aa = () => {
 
   return (
     <>
+      <Sidebar />
       <div className="container mx-auto mt-10 px-10">
-        <div className="flex justify-center items-center mb-4">
-          <h1 className="text-2xl font-semibold text-gray-800">Account Management</h1>
+        <div className="justify-start items-start mb-16">
+          <h1 className="text-2xl font-semibold text-gray-800">Data Siswa</h1>
+          <p>/ datasiswa</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -92,30 +124,47 @@ const aa = () => {
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
-          <button
-            onClick={deleteSelected}
-            disabled={selectedIds.length === 0}
-            className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-          >
-            Delete Selected
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportData}
+              className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700"
+            >
+              Export
+            </button>
+            <label className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700 flex items-center cursor-pointer">
+              Import
+              <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
+            </label>
+            <button
+              onClick={() => alert('Add Data clicked')}
+              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+            >
+              Tambah Data
+            </button>
+            <button
+              onClick={deleteSelected}
+              disabled={selectedIds.length === 0}
+              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+            >
+              Hapus Pilihan
+            </button>
+          </div>
         </div>
         <table className="min-w-full bg-white rounded-lg shadow-md">
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="py-3 px-1 text-center">
-                <span>Select</span>
+                <span>Pilih</span>
               </th>
               <th className="py-3 px-2 text-center">No</th>
               <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Name {getSortIcon('name')}
+                Nama {getSortIcon('name')}
               </th>
+              <th className="py-3 px-4 text-left">Nisn</th>
               <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Password</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('date')}>
-                Date Created {getSortIcon('date')}
-              </th>
-              <th className="py-3 px-4 text-center">Actions</th>
+              <th className="py-3 px-4 text-left">No. Hp</th>
+              <th className="py-3 px-4 text-left">Kelas</th>
+              <th className="py-3 px-4 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -128,10 +177,14 @@ const aa = () => {
                 </td>
                 <td className="px-4 py-3 text-center">{offset + index + 1}</td>
                 <td className="px-4 py-3">{item.name}</td>
+                <td className="px-4 py-3">{item.nisn}</td>
                 <td className="px-4 py-3">{item.email}</td>
-                <td className="px-4 py-3">{item.password}</td>
-                <td className="px-4 py-3">{new Date(item.date).toLocaleDateString()}</td>
+                <td className="px-4 py-3">{item.phone}</td>
+                <td className="px-4 py-3">{item.classId}</td>
                 <td className="px-4 py-3 text-center flex justify-center space-x-4">
+                  <button onClick={() => alert(`View details for ${item.name}`)} className="text-green-500 hover:text-green-600">
+                    <FaEye />
+                  </button>
                   <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                     <FaEdit />
                   </button>
@@ -149,4 +202,4 @@ const aa = () => {
   );
 };
 
-export default aa;
+export default aaa;
