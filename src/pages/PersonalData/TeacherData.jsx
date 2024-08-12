@@ -1,4 +1,3 @@
-// Account.js
 import React, { useState } from 'react';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
@@ -7,21 +6,8 @@ import Pagination from '../../components/Pagination'; // Import the Pagination c
 
 const TeacherData = () => {
   const [data, setData] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com', password: '123456', date: '2024-08-11', role: 'Guru' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', password: 'abcdef', date: '2024-07-20', role: 'Staff' },
-    { id: 3, name: 'Alice Johnson', email: 'alice@example.com', password: 'password', date: '2024-05-05', role: 'Guru' },
-    { id: 4, name: 'Bob Brown', email: 'bob@example.com', password: '123abc', date: '2024-04-11', role: 'Staff' },
-    { id: 5, name: 'Charlie Green', email: 'charlie@example.com', password: 'qwerty', date: '2024-03-15', role: 'Guru' },
-    { id: 6, name: 'David Black', email: 'david@example.com', password: 'password123', date: '2024-02-10', role: 'Staff' },
-    { id: 7, name: 'Eve White', email: 'eve@example.com', password: 'letmein', date: '2024-01-05', role: 'Guru' },
-    { id: 8, name: 'Fay Brown', email: 'fay@example.com', password: 'mypassword', date: '2023-12-12', role: 'Staff' },
-    { id: 9, name: 'Grace Black', email: 'grace@example.com', password: 'supersecret', date: '2023-11-15', role: 'Guru' },
-    { id: 10, name: 'Hank White', email: 'hank@example.com', password: 'hunter2', date: '2023-10-05', role: 'Staff' },
-    { id: 11, name: 'Ivan Grey', email: 'ivan@example.com', password: 'mypassword1', date: '2023-09-10', role: 'Guru' },
-    { id: 12, name: 'Jack Blue', email: 'jack@example.com', password: 'password456', date: '2023-08-20', role: 'Staff' },
-    { id: 13, name: 'Karl Red', email: 'karl@example.com', password: 'pass1234', date: '2023-07-11', role: 'Guru' },
-    { id: 14, name: 'Laura Pink', email: 'laura@example.com', password: 'mysecret', date: '2023-06-15', role: 'Staff' },
-    { id: 20, name: 'Ruth Grey', email: 'ruth@example.com', password: 'mypassword2', date: '2022-12-15', role: 'Staff' },
+    { id: 1, name: 'John Doe', nip: '123456', email: 'john@example.com', phone: '081234567890', categories: 'Guru', date: '2024-08-11' },
+    { id: 2, name: 'Jane Smith', nip: '123032', email: 'jane@example.com', phone: '081234567891', categories: 'Staff', date: '2024-07-20' },
   ]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -83,10 +69,10 @@ const TeacherData = () => {
     setCurrentPage(selected);
   };
 
-  const renderTable = (role) => {
+  const renderTable = (categories) => {
     const filteredData = data.filter(
       (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) && item.role === role // Filter by role
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) && item.categories === categories // Filter by categories
     );
 
     const pageCount = Math.ceil(filteredData.length / itemsPerPage);
@@ -96,22 +82,20 @@ const TeacherData = () => {
     return (
       <>
         <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-800 text-white">
+          <thead className="bg-gray-700 text-white">
             <tr>
               <th className="py-3 px-1 text-center">
-                <span>Select</span>
+                <span>Pilih</span>
               </th>
               <th className="py-3 px-2 text-center">No</th>
               <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Name {getSortIcon('name')}
+                Nama {getSortIcon('name')}
               </th>
+              <th className="py-3 px-4 text-left">NIP</th>
               <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Password</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('date')}>
-                Date Created {getSortIcon('date')}
-              </th>
-              <th className="py-3 px-4 text-left">Role</th>
-              <th className="py-3 px-4 text-center">Actions</th>
+              <th className="py-3 px-4 text-left">No. HP</th>
+              <th className="py-3 px-4 text-left">Sebagai</th>
+              <th className="py-3 px-4 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -124,10 +108,10 @@ const TeacherData = () => {
                 </td>
                 <td className="px-4 py-3 text-center">{offset + index + 1}</td>
                 <td className="px-4 py-3">{item.name}</td>
+                <td className="px-4 py-3">{item.nip}</td>
                 <td className="px-4 py-3">{item.email}</td>
-                <td className="px-4 py-3">{item.password}</td>
-                <td className="px-4 py-3">{new Date(item.date).toLocaleDateString()}</td>
-                <td className="px-4 py-3">{item.role}</td>
+                <td className="px-4 py-3">{item.phone}</td>
+                <td className="px-4 py-3">{item.categories}</td>
                 <td className="px-4 py-3 text-center flex justify-center space-x-4">
                   <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                     <FaEdit />
@@ -185,8 +169,8 @@ const TeacherData = () => {
                 key={role}
                 className={`flex-1 text-center py-3 text-sm font-medium leading-5 cursor-pointer ${
                   activeTab === index
-                    ? 'border-b-2 border-blue-500 text-black'
-                    : 'border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-b-2 border-blue-500 text-blue-500'
+                    : 'border-b-2 border-transparent text-gray-500 hover:text-gray-400 hover:border-gray-300'
                 } focus:outline-none`}
               >
                 {role}

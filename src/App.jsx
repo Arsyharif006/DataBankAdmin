@@ -1,13 +1,15 @@
 import React from 'react'
-import AccountTable from './pages/Account';
-import Dashboard from './pages/Dashboard';
-import TeacherData from './pages/PersonalData/TeacherData';
+import Routes  from './routes/Index';
+import { Toaster } from 'react-hot-toast';
+
+
 
 const App = () => {
   return (
     <>
     <div className="flex">
-      <Dashboard/>
+    <Routes />  
+    <Toaster />
 
     </div>
     </>
