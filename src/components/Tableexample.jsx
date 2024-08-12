@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx';
 const aaa = () => {
   const [data, setData] = useState([
     { id: 1, name: 'John Doe', nisn: '349234234', email: 'john@example.com', phone: '08783233423', classId: '12 PPLG 1' },
-    // Add more students as needed
+    //
   ]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
