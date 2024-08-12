@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
 import Pagination from '../../components/Pagination'; 
 import Sidebar from '../../components/Sidebar';
-// You'll need to install 'xlsx' library: npm install xlsx
 import * as XLSX from 'xlsx';
 
 const aaa = () => {
