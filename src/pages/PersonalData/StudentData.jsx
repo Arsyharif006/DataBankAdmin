@@ -141,13 +141,7 @@ const StudentData = () => {
             >
               Tambah Data
             </button>
-            <button
-              onClick={deleteSelected}
-              disabled={selectedIds.length === 0}
-              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-            >
-              Hapus Pilihan
-            </button>
+          
           </div>
         </div>
         <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -196,7 +190,16 @@ const StudentData = () => {
             ))}
           </tbody>
         </table>
+        <div className='flex mt-5 justify-between'>
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        <button
+              onClick={deleteSelected}
+              disabled={selectedIds.length === 0}
+              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+              >
+              Hapus Pilihan
+            </button>
+              </div>
       </div>
     </>
   );

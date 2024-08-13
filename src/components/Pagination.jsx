@@ -4,7 +4,7 @@ import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri'; // Import 
 
 const Pagination = ({ pageCount, onPageChange }) => {
   return (
-    <div className="flex my-5">
+    <div>
       <ReactPaginate
         pageCount={pageCount}
         onPageChange={onPageChange}
