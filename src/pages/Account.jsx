@@ -5,9 +5,9 @@ import Sidebar from '../components/Sidebar';
 
 const Account = () => {
   const [data, setData] = useState([
-    { id: 1, name: 'John Doe', username: 'Admin123', password: '123456', date: '2024-08-11',role: 'Admin' },
-    { id: 2, name: 'Jane Smith', username: 'janeeee', password: 'abcdef', date: '2024-07-20',role: 'Admin' },
-    { id: 3, name: 'Alice Johnson', username: 'alice0492', password: 'password', date: '2024-05-05', role: 'Client' },
+    { id: 1,  username: 'Admin123', password: '123456', date: '2024-08-11',role: 'Admin' },
+    { id: 2,  username: 'janeeee', password: 'abcdef', date: '2024-07-20',role: 'Admin' },
+    { id: 3,  username: 'alice0492', password: 'password', date: '2024-05-05', role: 'Client' },
   ]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -65,7 +65,7 @@ const Account = () => {
   };
 
   const filteredData = data.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    item.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handlePageChange = ({ selected }) => {
@@ -82,7 +82,7 @@ const Account = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Manajemen Akun</h1>
-          <p>/ akun</p>
+          <p className='text-gray-500'>/ akun-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -95,13 +95,15 @@ const Account = () => {
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
-          <button
-            onClick={deleteSelected}
-            disabled={selectedIds.length === 0}
-            className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-          >
-            Delete Selected
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => alert('Add Data clicked')}
+              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+            >
+              Tambah Data
+            </button>
+          
+          </div>
         </div>
         <table className="min-w-full bg-white rounded-lg shadow-md">
           <thead className="bg-gray-700 text-white">
@@ -110,10 +112,9 @@ const Account = () => {
                 <span>Select</span>
               </th>
               <th className="py-3 px-2 text-center">No</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Name {getSortIcon('name')}
+              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('username')}>
+                Username {getSortIcon('username')}
               </th>
-              <th className="py-3 px-4 text-left">Username</th>
               <th className="py-3 px-4 text-left">Password</th>
               <th className="py-3 px-4 text-left">Peran</th>
               <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('date')}>
@@ -131,7 +132,6 @@ const Account = () => {
                   </button>
                 </td>
                 <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3">{item.username}</td>
                 <td className="px-4 py-3">{item.password}</td>
                 <td className="px-4 py-3">{item.role}</td>
@@ -148,7 +148,16 @@ const Account = () => {
             ))}
           </tbody>
         </table>
+        <div className='flex mt-5 justify-between'>
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        <button
+              onClick={deleteSelected}
+              disabled={selectedIds.length === 0}
+              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+              >
+              Hapus Pilihan
+            </button>
+              </div>
       </div>
     </>
   );

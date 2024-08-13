@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
+import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import Sidebar from '../../components/Sidebar';
 import Pagination from '../../components/Pagination'; // Import the Pagination component
+import * as XLSX from 'xlsx';
 
 const TeacherData = () => {
   const [data, setData] = useState([
@@ -69,6 +70,33 @@ const TeacherData = () => {
     setCurrentPage(selected);
   };
 
+  
+  // Import data from Excel
+  const importData = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const binaryStr = e.target.result;
+      const workbook = XLSX.read(binaryStr, { type: 'binary' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const importedData = XLSX.utils.sheet_to_json(worksheet);
+      const formattedData = importedData.map((item, index) => ({
+      
+      }));
+      setData([...data, ...formattedData]);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  // Export data to Excel
+  const exportData = () => {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Teachers');
+    XLSX.writeFile(wb, 'Teachers.xlsx');
+  };
+
   const renderTable = (categories) => {
     const filteredData = data.filter(
       (item) =>
@@ -113,6 +141,9 @@ const TeacherData = () => {
                 <td className="px-4 py-3">{item.phone}</td>
                 <td className="px-4 py-3">{item.categories}</td>
                 <td className="px-4 py-3 text-center flex justify-center space-x-4">
+                <button onClick={() => alert(`View details for ${item.name}`)} className="text-green-500 hover:text-green-600">
+                    <FaEye />
+                  </button>
                   <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                     <FaEdit />
                   </button>
@@ -124,8 +155,16 @@ const TeacherData = () => {
             ))}
           </tbody>
         </table>
-
+        <div className='flex mt-5 justify-between'>
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        <button
+              onClick={deleteSelected}
+              disabled={selectedIds.length === 0}
+              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+              >
+              Hapus Pilihan
+            </button>
+              </div>
       </>
     );
   };
@@ -136,7 +175,7 @@ const TeacherData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-Start items-Start mb-12">
           <h1 className="text-2xl font-semibold text-gray-800">Data Guru Dan Staff</h1>
-          <p className='text-gray-500'>/ dataguru</p>
+          <p className='text-gray-500'>/ dataguru-admin</p>
         </div>
 
         <div className="flex justify-between mb-4">
@@ -150,16 +189,25 @@ const TeacherData = () => {
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
-
-          <button
-            onClick={deleteSelected}
-            disabled={selectedIds.length === 0}
-            className={`bg-red-500 text-white px-3 h-11 rounded ${
-              selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
-            }`}
-          >
-            Delete Selected
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportData}
+              className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700"
+            >
+              Export
+            </button>
+            <label className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700 flex items-center cursor-pointer">
+              Import
+              <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
+            </label>
+            <button
+              onClick={() => alert('Add Data clicked')}
+              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+            >
+              Tambah Data
+            </button>
+          
+          </div>
         </div>
 
         <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
@@ -181,6 +229,7 @@ const TeacherData = () => {
           <TabPanel>{renderTable('Guru')}</TabPanel>
           <TabPanel>{renderTable('Staff')}</TabPanel>
         </Tabs>
+        
       </div>
     </>
   );

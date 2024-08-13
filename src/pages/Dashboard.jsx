@@ -86,7 +86,7 @@ const Dashboard = () => {
     <div className="container mx-auto mt-10 px-10">
           <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Dashboard Admin</h1>
-          <p className='text-gray-500'>/ dashboard</p>
+          <p className='text-gray-500'>/ dashboard-admin</p>
         </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-4 shadow rounded-lg">

@@ -77,12 +77,7 @@ const StudentData = () => {
       const worksheet = workbook.Sheets[firstSheetName];
       const importedData = XLSX.utils.sheet_to_json(worksheet);
       const formattedData = importedData.map((item, index) => ({
-        id: data.length + index + 1,
-        name: item.Name || '',
-        nisn: item.Nisn || '',
-        email: item.Email || '',
-        phone: item.Phone || '',
-        classId: item.Class || '',
+       
       }));
       setData([...data, ...formattedData]);
     };
@@ -111,7 +106,7 @@ const StudentData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Data Siswa</h1>
-          <p>/ datasiswa</p>
+          <p className='text-gray-500'>/ datasiswa-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
