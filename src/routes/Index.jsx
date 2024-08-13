@@ -14,6 +14,10 @@ import DashboardAdmin from '../pages/Dashboard.jsx';
 import AkunAdmin from '../pages/Account.jsx';
 import TeacherDataAdmin from '../pages/PersonalData/TeacherData.jsx';
 import StudentDataAdmin from '../pages/PersonalData/StudentData.jsx';
+import CourseDataAdmin from '../pages/SchoolManagement/CourseData.jsx';
+import DepartmentDataAdmin from '../pages/SchoolManagement/DepartmentData.jsx';
+import ClassDataAdmin from '../pages/SchoolManagement/ClassData.jsx';
+
 
 
 export default function RoutesIndex() {
@@ -77,6 +81,42 @@ export default function RoutesIndex() {
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
                             <StudentDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/matapelajaran-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <CourseDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/jurusan-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <DepartmentDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/kelas-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <ClassDataAdmin />
                         </PrivateRoutes>
                     </Suspense>
 
