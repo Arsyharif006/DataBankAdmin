@@ -5,9 +5,7 @@ import Sidebar from '../../components/Sidebar';
 
 const ClassData = () => {
   const [data, setData] = useState([
-    { id: 1, name: 'Matematika', departmentId: 'D01', categoryId: 'C01' },
-    { id: 2, name: 'Agama', departmentId: 'D02', categoryId: 'C02' },
-    { id: 3, name: 'PPLG', departmentId: 'D01', categoryId: 'C03' },
+    { id: 1, departmentId: 'PPLG',name: '1', level: 'X' },
   ]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -78,8 +76,8 @@ const ClassData = () => {
       <Sidebar />
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
-          <h1 className="text-2xl font-semibold text-gray-800">Data Mata Pelajaran</h1>
-          <p className='text-gray-500'>/ matapelajaran-admin</p>
+          <h1 className="text-2xl font-semibold text-gray-800">Data Kelas</h1>
+          <p className='text-gray-500'>/ kelas-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -108,10 +106,10 @@ const ClassData = () => {
               </th>
               <th className="py-3 px-2 text-center">No</th>
               <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Nama Mata Pelajaran {getSortIcon('name')}
+                Nama Jurusan {getSortIcon('name')}
               </th>
-              <th className="py-3 px-4 text-left">DepartmentId</th>
-              <th className="py-3 px-4 text-left">CategoryId</th>
+              <th className="py-3 px-4 text-left">Tingkat</th>
+              <th className="py-3 px-4 text-left">Nama Kelas</th>
               <th className="py-3 px-4 text-center">Aksi</th>
             </tr>
           </thead>
@@ -124,9 +122,9 @@ const ClassData = () => {
                   </button>
                 </td>
                 <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3">{item.departmentId}</td>
-                <td className="px-4 py-3">{item.categoryId}</td>
+                <td className="px-4 py-3">{item.level}</td>
+                <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3 text-center flex justify-center space-x-4">
                   <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                     <FaEdit />
