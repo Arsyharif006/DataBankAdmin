@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
 import Pagination from '../components/Pagination'; 
 import Sidebar from '../components/Sidebar';
+import AddAccountModal from '../components/AddAccountModal';
+import EditAccountModal from '../components/EditAccountModal';
 
 const Account = () => {
   const [data, setData] = useState([
@@ -14,6 +16,9 @@ const Account = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
   const itemsPerPage = 5;
 
   const sortData = (key) => {
@@ -60,8 +65,9 @@ const Account = () => {
   };
 
   const editAccount = (id) => {
-    // Implement edit functionality here
-    alert(`Editing account with id: ${id}`);
+    const accountToEdit = data.find((item) => item.id === id);
+    setEditData(accountToEdit);
+    setIsEditModalOpen(true);
   };
 
   const filteredData = data.filter(item =>
@@ -78,11 +84,11 @@ const Account = () => {
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Manajemen Akun</h1>
-          <p className='text-gray-500'>/ akun-admin</p>
+          <p className="text-gray-500">/ akun-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -97,12 +103,18 @@ const Account = () => {
           </div>
           <div className="flex space-x-2">
             <button
-              onClick={() => alert('Add Data clicked')}
+              onClick={() => setIsAddModalOpen(true)}
               className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
             >
               Tambah Data
             </button>
-          
+            <button
+              onClick={deleteSelected}
+              disabled={selectedIds.length === 0}
+              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+            >
+              Hapus Pilihan
+            </button>
           </div>
         </div>
         <table className="min-w-full bg-white rounded-lg shadow-md">
@@ -148,17 +160,18 @@ const Account = () => {
             ))}
           </tbody>
         </table>
-        <div className='flex mt-5 justify-between'>
-        <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
-        <button
-              onClick={deleteSelected}
-              disabled={selectedIds.length === 0}
-              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-              >
-              Hapus Pilihan
-            </button>
-              </div>
+        <div className="flex mt-5 justify-between">
+          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        </div>
       </div>
+      <AddAccountModal isOpen={isAddModalOpen} onRequestClose={() => setIsAddModalOpen(false)} onAdd={(newAccount) => {
+        setData([...data, { ...newAccount, id: data.length + 1, date: new Date().toISOString() }]);
+        setIsAddModalOpen(false);
+      }} />
+      <EditAccountModal isOpen={isEditModalOpen} onRequestClose={() => setIsEditModalOpen(false)} onEdit={(updatedAccount) => {
+        setData(data.map((item) => (item.id === updatedAccount.id ? updatedAccount : item)));
+        setIsEditModalOpen(false);
+      }} accountData={editData} />
     </>
   );
 };
