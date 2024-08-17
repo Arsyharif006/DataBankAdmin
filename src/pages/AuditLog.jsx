@@ -62,7 +62,7 @@ const AuditLog = () => {
       <Sidebar />
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
-          <h1 className="text-2xl font-semibold text-gray-800">Audit Log</h1>
+          <h1 className="text-2xl font-semibold text-gray-800">Audi Log</h1>
           <p className='text-gray-500'>/ auditlog-admin</p>
         </div>
         <div className="flex justify-between items-center mb-4">
