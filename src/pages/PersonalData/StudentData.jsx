@@ -16,11 +16,11 @@ const StudentData = () => {
       classId: "12 PPLG 1",
       fieldOfStudy: "PPLG",
       gender: "Laki-Laki",
-      placeOfBirth: "yogyakarta",
+      placeOfBirth: "Yogyakarta",
       dateOfBrith: "19/08/2007",
       religion: "Islam",
       citizen: "Indonesia",
-      childOf: "pertama",
+      childOf: "Pertama",
       numberOfSiblings: "5",
       email: "john@example.com",
       phone: "08783233423",
@@ -28,11 +28,11 @@ const StudentData = () => {
       district: "Kecamatan Contoh",
       city: "Yogyakarta",
       schoolTransport: "Ojek",
-      residenceStatus: "rumah sewa",
-      livingWith: "Orang tua",
+      residenceStatus: "Rumah Sewa",
+      livingWith: "Orang Tua",
       //orangtua//
-      parentName: "Muhammad arfan",
-      parentStatus: "kandung",
+      parentName: "Muhammad Arfan",
+      parentStatus: "Kandung",
       parentPlaceOfBirth: "Yogyakarta",
       parentDateOfBirth: "15/01/1970",
       parentLastEducation: "S1",
@@ -156,86 +156,102 @@ const StudentData = () => {
               placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-md py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
           <div className="flex space-x-2">
             <button
               onClick={exportData}
-              className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700"
+              className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200"
             >
               Export
             </button>
-            <label className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700 flex items-center cursor-pointer">
+            <label className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200 flex items-center cursor-pointer">
               Import
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
             <button
               onClick={() => alert('Add Data clicked')}
-              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
             >
               Tambah Data
             </button>
           
           </div>
         </div>
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              <th className="py-3 px-1 text-center">
-                <span>Pilih</span>
-              </th>
-              <th className="py-3 px-2 text-center">No</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Nama {getSortIcon('name')}
-              </th>
-              <th className="py-3 px-4 text-left">Nisn</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">No. Hp</th>
-              <th className="py-3 px-4 text-left">Kelas</th>
-              <th className="py-3 px-4 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
-            {currentData.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-3 text-center">
-                  <button onClick={() => toggleSelect(item.id)}>
-                    {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.name}</td>
-                <td className="px-4 py-3">{item.nisn}</td>
-                <td className="px-4 py-3">{item.email}</td>
-                <td className="px-4 py-3">{item.phone}</td>
-                <td className="px-4 py-3">{item.classId}</td>
-                <td className="px-4 py-3 text-center flex justify-center space-x-4">
-                  <button onClick={() => alert(`View details for ${item.name}`)} className="text-green-500 hover:text-green-600">
-                    <FaEye />
-                  </button>
-                  <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
-                    <FaEdit />
-                  </button>
-                  <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
-                    <FaTrash />
-                  </button>
-                </td>
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-700 text-gray-50">
+              <tr>
+                <th className="py-3 px-4 font-medium">Pilih</th>
+                <th className="py-3 px-4 font-medium">No</th>
+                <th className="py-3 px-4 text-left cursor-pointer" onClick={() => sortData('name')}>
+                  Nama {getSortIcon('name')}
+                </th>
+                <th className="py-3 px-4 text-left">Nisn</th>
+                <th className="py-3 px-4 text-left">Email</th>
+                <th className="py-3 px-4 text-left">No. Hp</th>
+                <th className="py-3 px-4 text-left">Kelas</th>
+                <th className="py-3 px-4 text-center">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className='flex mt-5 justify-between'>
-        <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
-        <button
-              onClick={deleteSelected}
-              disabled={selectedIds.length === 0}
-              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-              >
-              Hapus Pilihan
-            </button>
-              </div>
+            </thead>
+            <tbody className="text-gray-700">
+              {currentData.map((item, index) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="px-5 py-4 border-b text-center">
+                    <button onClick={() => toggleSelect(item.id)}>
+                      {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
+                    </button>
+                  </td>
+                  <td className="px-5 py-4 border-b text-center">{offset + index + 1}</td>
+                  <td className="px-5 py-4 border-b">{item.name}</td>
+                  <td className="px-5 py-4 border-b">{item.nisn}</td>
+                  <td className="px-5 py-4 border-b">{item.email}</td>
+                  <td className="px-5 py-4 border-b">{item.phone}</td>
+                  <td className="px-5 py-4 border-b">{item.classId}</td>
+                  <td className="px-5 py-4 border-b text-center">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => alert('View clicked')}
+                        className="text-blue-700 hover:text-blue-900"
+                      >
+                        <FaEye />
+                      </button>
+                      <button
+                        onClick={() => editAccount(item.id)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => deleteAccount(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-between mt-4">
+          <Pagination
+            pageCount={pageCount}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+            className="mt-4"
+          />
+            <button
+                onClick={deleteSelected}
+                disabled={selectedIds.length === 0}
+                className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
+                >
+                Hapus Pilihan
+              </button>
+        </div>
       </div>
     </>
   );
