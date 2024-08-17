@@ -17,6 +17,7 @@ import StudentDataAdmin from '../pages/PersonalData/StudentData.jsx';
 import CourseDataAdmin from '../pages/SchoolManagement/CourseData.jsx';
 import DepartmentDataAdmin from '../pages/SchoolManagement/DepartmentData.jsx';
 import ClassDataAdmin from '../pages/SchoolManagement/ClassData.jsx';
+import AuditLogAdmin from '../pages/AuditLog.jsx';
 
 
 
@@ -117,6 +118,18 @@ export default function RoutesIndex() {
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
                             <ClassDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/auditlog-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <AuditLogAdmin />
                         </PrivateRoutes>
                     </Suspense>
 

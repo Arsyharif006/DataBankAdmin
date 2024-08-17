@@ -36,7 +36,7 @@ const menus = [
       { name: "Data Kelas", link: "/kelas-admin" },
     ],
   },
-  { title: "Report", icon: <MdOutlineInsertChart />, link: "/report" },
+  { title: "Audit Log", icon: <MdOutlineInsertChart />, link: "/auditlog-admin" },
   { title: "Log Out", icon: <HiOutlineLogout />, link: "/logout" },
 ];
 
