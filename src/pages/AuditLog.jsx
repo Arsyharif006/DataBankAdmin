@@ -116,7 +116,7 @@ const AuditLog = () => {
             <tbody>
               {currentData.map((item, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-5 py-4 border-b">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.organizer}</td>
                   <td className="py-3 px-4 border-b">{item.activity}</td>
                   <td className="py-3 px-4 border-b">{item.subActivity}</td>

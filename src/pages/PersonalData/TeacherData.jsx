@@ -174,21 +174,22 @@ const TeacherData = () => {
 
     return (
       <>
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-700 text-white">
+         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-700 text-gray-50">
             <tr>
-              <th className="py-3 px-1 text-center">
+              <th className=" text-center font-medium">
                 <span>Pilih</span>
               </th>
-              <th className="py-3 px-2 text-center">No</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
+              <th className="py-3 px-2 text-center font-medium">No</th>
+              <th className="py-3 px-4 text-left font-medium cursor-pointer flex items-center" onClick={() => sortData('name')}>
                 Nama {getSortIcon('name')}
               </th>
-              <th className="py-3 px-4 text-left">NIP</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">No. HP</th>
-              <th className="py-3 px-4 text-left">Sebagai</th>
-              <th className="py-3 px-4 text-center">Aksi</th>
+              <th className="py-3 px-4 text-left font-medium">NIP</th>
+              <th className="py-3 px-4 text-left font-medium">Email</th>
+              <th className="py-3 px-4 text-left font-medium">No. HP</th>
+              <th className="py-3 px-4 text-left font-medium">Sebagai</th>
+              <th className="py-3 px-4 text-center font-medium">Aksi</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -200,26 +201,38 @@ const TeacherData = () => {
                   </button>
                 </td>
                 <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.name}</td>
-                <td className="px-4 py-3">{item.nip}</td>
-                <td className="px-4 py-3">{item.email}</td>
-                <td className="px-4 py-3">{item.phone}</td>
-                <td className="px-4 py-3">{item.categories}</td>
-                <td className="px-4 py-3 text-center flex justify-center space-x-4">
-                <button onClick={() => alert(`View details for ${item.name}`)} className="text-green-500 hover:text-green-600">
-                    <FaEye />
-                  </button>
-                  <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
-                    <FaEdit />
-                  </button>
-                  <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
-                    <FaTrash />
-                  </button>
-                </td>
+                <td className="py-3 px-4 border-b">{item.name}</td>
+                <td className="py-3 px-4 border-b">{item.nip}</td>
+                <td className="py-3 px-4 border-b">{item.email}</td>
+                <td className="py-3 px-4 border-b">{item.phone}</td>
+                <td className="py-3 px-4 border-b">{item.categories}</td>
+                <td className="px-5 py-4 border-b text-center">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => alert('View clicked')}
+                        className="text-blue-700 hover:text-blue-900"
+                      >
+                        <FaEye />
+                      </button>
+                      <button
+                        onClick={() => editAccount(item.id)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => deleteAccount(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
         <div className='flex mt-5 justify-between'>
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         <button
@@ -250,24 +263,24 @@ const TeacherData = () => {
               placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-md py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
           <div className="flex space-x-2">
             <button
               onClick={exportData}
-              className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700"
+              className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200"
             >
               Export
             </button>
-            <label className="bg-blue-600 text-white px-3 h-11 rounded hover:bg-blue-700 flex items-center cursor-pointer">
+            <label className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200 flex items-center cursor-pointer">
               Import
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
             <button
               onClick={() => alert('Add Data clicked')}
-              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
             >
               Tambah Data
             </button>

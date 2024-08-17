@@ -184,33 +184,33 @@ const StudentData = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-gray-700 text-gray-50">
               <tr>
-                <th className="py-3 px-4 font-medium">Pilih</th>
-                <th className="py-3 px-4 font-medium">No</th>
-                <th className="py-3 px-4 text-left cursor-pointer" onClick={() => sortData('name')}>
+                <th className="py-3 px-1 font-medium">Pilih</th>
+                <th className="py-3 px-2 font-medium">No</th>
+                <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('name')}>
                   Nama {getSortIcon('name')}
                 </th>
-                <th className="py-3 px-4 text-left">Nisn</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">No. Hp</th>
-                <th className="py-3 px-4 text-left">Kelas</th>
-                <th className="py-3 px-4 text-center">Aksi</th>
+                <th className="py-3 px-4 text-left font-medium">Nisn</th>
+                <th className="py-3 px-4 text-left font-medium">Email</th>
+                <th className="py-3 px-4 text-left font-medium">No. Hp</th>
+                <th className="py-3 px-4 text-left font-medium">Kelas</th>
+                <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
               {currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-4 border-b text-center">
+                  <td className="py-3 px-4 border-b text-center">
                     <button onClick={() => toggleSelect(item.id)}>
                       {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
                     </button>
                   </td>
-                  <td className="px-5 py-4 border-b text-center">{offset + index + 1}</td>
-                  <td className="px-5 py-4 border-b">{item.name}</td>
-                  <td className="px-5 py-4 border-b">{item.nisn}</td>
-                  <td className="px-5 py-4 border-b">{item.email}</td>
-                  <td className="px-5 py-4 border-b">{item.phone}</td>
-                  <td className="px-5 py-4 border-b">{item.classId}</td>
-                  <td className="px-5 py-4 border-b text-center">
+                  <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.name}</td>
+                  <td className="py-3 px-4 border-b">{item.nisn}</td>
+                  <td className="py-3 px-4 border-b">{item.email}</td>
+                  <td className="py-3 px-4 border-b">{item.phone}</td>
+                  <td className="py-3 px-4 border-b">{item.classId}</td>
+                  <td className="py-3 px-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
                       <button
                         onClick={() => alert('View clicked')}

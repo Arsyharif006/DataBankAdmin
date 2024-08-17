@@ -7,8 +7,8 @@ import EditAccountModal from '../components/EditAccountModal';
 
 const Account = () => {
   const [data, setData] = useState([
-    { id: 1,  username: 'Admin123', password: '123456', date: '2024-08-11',role: 'Admin' },
-    { id: 2,  username: 'janeeee', password: 'abcdef', date: '2024-07-20',role: 'Admin' },
+    { id: 1,  username: 'Admin123', password: '123456', date: '2024-08-11', role: 'Admin' },
+    { id: 2,  username: 'janeeee', password: 'abcdef', date: '2024-07-20', role: 'Admin' },
     { id: 3,  username: 'alice0492', password: 'password', date: '2024-05-05', role: 'Client' },
   ]);
 
@@ -117,49 +117,59 @@ const Account = () => {
             </button>
           </div>
         </div>
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-700 text-white">
-            <tr>
-              <th className="py-3 px-1 text-center">
-                <span>Select</span>
-              </th>
-              <th className="py-3 px-2 text-center">No</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('username')}>
-                Username {getSortIcon('username')}
-              </th>
-              <th className="py-3 px-4 text-left">Password</th>
-              <th className="py-3 px-4 text-left">Peran</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('date')}>
-                Date Created {getSortIcon('date')}
-              </th>
-              <th className="py-3 px-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
-            {currentData.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-3 text-center">
-                  <button onClick={() => toggleSelect(item.id)}>
-                    {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.username}</td>
-                <td className="px-4 py-3">{item.password}</td>
-                <td className="px-4 py-3">{item.role}</td>
-                <td className="px-4 py-3">{new Date(item.date).toLocaleDateString()}</td>
-                <td className="px-4 py-3 text-center flex justify-center space-x-4">
-                  <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
-                    <FaEdit />
-                  </button>
-                  <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
-                    <FaTrash />
-                  </button>
-                </td>
+
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-700 text-gray-50">
+              <tr>
+                <th className="py-3 px-1 font-medium">Pilih</th>
+                <th className="py-3 px-2 font-medium">No</th>
+                <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('username')}>
+                  Username {getSortIcon('username')}
+                </th>
+                <th className="py-3 px-4 text-left font-medium">Password</th>
+                <th className="py-3 px-4 text-left font-medium">Peran</th>
+                <th className="py-3 px-4 text-left font-medium cursor-pointer" onClick={() => sortData('date')}>
+                  Date Created {getSortIcon('date')}
+                </th>
+                <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-700">
+              {currentData.map((item, index) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="py-3 px-4 border-b text-center">
+                    <button onClick={() => toggleSelect(item.id)}>
+                      {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.username}</td>
+                  <td className="py-3 px-4 border-b">{item.password}</td>
+                  <td className="py-3 px-4 border-b">{item.role}</td>
+                  <td className="py-3 px-4 border-b">{new Date(item.date).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 border-b text-center">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => editAccount(item.id)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => deleteAccount(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         <div className="flex mt-5 justify-between">
           <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         </div>
