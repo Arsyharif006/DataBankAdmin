@@ -61,8 +61,6 @@ const DepartmentData = () => {
     setCurrentPage(selected);
   };
 
-
-
   const filteredData = data.filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -98,41 +96,41 @@ const DepartmentData = () => {
             </button>
           
         </div>
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-800 text-white">
-            <tr>
-              <th className="py-3 px-1 text-center">
-                <span>Pilih</span>
-              </th>
-              <th className="py-3 px-2 text-center">No</th>
-              <th className="py-3 px-4 text-left cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Nama Jurusan {getSortIcon('name')}
-              </th>
-              <th className="py-3 px-4 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
-            {currentData.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-3 text-center">
-                  <button onClick={() => toggleSelect(item.id)}>
-                    {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="px-4 py-3">{item.name}</td>
-                <td className="px-4 py-3 text-center flex justify-center space-x-4">
-                  <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
-                    <FaEdit />
-                  </button>
-                  <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
-                    <FaTrash />
-                  </button>
-                </td>
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-700 text-gray-50">
+              <tr>
+                <th className="py-3 px-4 font-medium text-start">Pilih</th>
+                <th className="text-left py-3 px-4 font-medium">No</th>
+                <th className="text-left py-3 px-4 font-medium cursor-pointer flex items-center" onClick={() => sortData('name')}>
+                  Nama Jurusan {getSortIcon('name')}
+                </th>
+                <th className="text-start py-3 px-4 font-medium">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentData.map((item, index) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="py-3 px-4 border-b text-start">
+                    <button onClick={() => toggleSelect(item.id)}>
+                      {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 border-b">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.name}</td>
+                  <td className="py-3 px-4 border-b text-start space-x-4">
+                    <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
+                      <FaEdit />
+                    </button>
+                    <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className='flex mt-5 justify-between'>
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         <button
