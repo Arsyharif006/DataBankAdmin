@@ -8,7 +8,6 @@ import AddClassModal from '../../components/AddClassModal';
 
 const ClassData = () => {
   const [data, setData] = useState([]);
-  const [departments, setDepartments] = useState([]); // Store departments data
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,22 +28,8 @@ const ClassData = () => {
           },
         });
         const rooms = classResponse.data.data;
-
-        // Fetch departments data
-        const departmentResponse = await axios.get('/api/admin/jurusan', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const departmentData = departmentResponse.data.data;
-
-        if (Array.isArray(rooms) && Array.isArray(departmentData)) {
-          setData(rooms);
-          setDepartments(departmentData); // Store departments in state
-        } else {
-          console.error('Unexpected data format:', rooms, departmentData);
-          setData([]);
-        }
+        setData(rooms);
+        
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -105,7 +90,6 @@ const ClassData = () => {
       console.error('Error deleting selected rooms:', error);
     }
   };
-  
 
   const deleteAccount = async (id) => {
     try {
@@ -140,11 +124,10 @@ const ClassData = () => {
   const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const getDepartmentName = (departmentId) => {
-    const department = departments.find((dept) => dept.id === departmentId);
-    return department ? department.nama : 'Unknown';
+  const closeModal = () => {
+    setIsModalOpen(false);
+    // Refresh data after closing the modal
+    fetchData();
   };
 
   return (
@@ -152,8 +135,8 @@ const ClassData = () => {
       <Sidebar />
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
-          <h1 className="text-2xl font-semibold text-gray-800">Data Ruangan</h1>
-          <p className='text-gray-500'>/ ruangan-admin</p>
+          <h1 className="text-2xl font-semibold text-gray-800">Data Kelas</h1>
+          <p className='text-gray-500'>/ kelas-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -197,7 +180,7 @@ const ClassData = () => {
                   </td>
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.nama}</td>
-                  <td className="py-3 px-4 border-b">{getDepartmentName(item.department_id)}</td>
+                  <td className="py-3 px-4 border-b">{item.department.nama}</td>
                   <td className="py-3 px-4 border-b">{item.tingkat}</td>
                   <td className="py-3 px-4 border-b text-start space-x-4">
                     <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
@@ -223,7 +206,7 @@ const ClassData = () => {
           </button>
         </div>
         {isModalOpen && (
-          <AddClassModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
+          <AddClassModal closeModal={closeModal} fetchData={fetchData} />
         )}
       </div>
     </>

@@ -84,9 +84,9 @@ const AddClassModal = ({ closeModal, fetchData }) => {
               required
             >
               <option value="" disabled>Pilih Kelas</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
+              <option value="Kelas 10">Kelas 10</option>
+              <option value="Kelas 11">Kelas 11</option>
+              <option value="Kelas 12">Kelas 12</option>
             </select>
           </div>
           <div className="mb-4">
