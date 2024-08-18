@@ -4,10 +4,11 @@ import Cookies from 'js-cookie';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
-import AddRoomModal from '../../components/AddRoomModal';
+import AddClassModal from '../../components/AddClassModal';
 
-const RoomData = () => {
+const ClassData = () => {
   const [data, setData] = useState([]);
+  const [departments, setDepartments] = useState([]); // Store departments data
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,16 +21,28 @@ const RoomData = () => {
     const fetchData = async () => {
       try {
         const token = Cookies.get('token');
-        const response = await axios.get('/api/admin/ruangan', {
+        
+        // Fetch class data
+        const classResponse = await axios.get('/api/admin/kelas', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const rooms = response.data.data;
-        if (Array.isArray(rooms)) {
+        const rooms = classResponse.data.data;
+
+        // Fetch departments data
+        const departmentResponse = await axios.get('/api/admin/jurusan', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const departmentData = departmentResponse.data.data;
+
+        if (Array.isArray(rooms) && Array.isArray(departmentData)) {
           setData(rooms);
+          setDepartments(departmentData); // Store departments in state
         } else {
-          console.error('Unexpected data format:', rooms);
+          console.error('Unexpected data format:', rooms, departmentData);
           setData([]);
         }
       } catch (error) {
@@ -75,7 +88,7 @@ const RoomData = () => {
       
       // Create an array of delete requests
       const deleteRequests = selectedIds.map(id =>
-        axios.delete(`/api/admin/ruangan/${id}`, {
+        axios.delete(`/api/admin/kelas/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -97,7 +110,7 @@ const RoomData = () => {
   const deleteAccount = async (id) => {
     try {
       const token = Cookies.get('token');
-      await axios.delete(`/api/admin/ruangan/${id}`, {
+      await axios.delete(`/api/admin/kelas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,6 +141,11 @@ const RoomData = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const getDepartmentName = (departmentId) => {
+    const department = departments.find((dept) => dept.id === departmentId);
+    return department ? department.nama : 'Unknown';
+  };
 
   return (
     <>
@@ -162,8 +180,10 @@ const RoomData = () => {
                 <th className="py-3 px-4 font-medium text-start">Pilih</th>
                 <th className="text-left py-3 px-4 font-medium">No</th>
                 <th className="text-left py-3 px-4 font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
-                  Nama Ruangan {getSortIcon('nama')}
+                  Nama Kelas {getSortIcon('nama')}
                 </th>
+                <th className="text-left py-3 px-4 font-medium">Jurusan</th>
+                <th className="text-left py-3 px-4 font-medium">Tingkat</th>
                 <th className="text-start py-3 px-4 font-medium">Aksi</th>
               </tr>
             </thead>
@@ -177,6 +197,8 @@ const RoomData = () => {
                   </td>
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.nama}</td>
+                  <td className="py-3 px-4 border-b">{getDepartmentName(item.department_id)}</td>
+                  <td className="py-3 px-4 border-b">{item.tingkat}</td>
                   <td className="py-3 px-4 border-b text-start space-x-4">
                     <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                       <FaEdit />
@@ -201,11 +223,11 @@ const RoomData = () => {
           </button>
         </div>
         {isModalOpen && (
-          <AddRoomModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
+          <AddClassModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
         )}
       </div>
     </>
   );
 };
 
-export default RoomData;
+export default ClassData;
