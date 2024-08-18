@@ -1,64 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../../api/Index';
+import Cookies from 'js-cookie';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
 import Pagination from '../../components/Pagination'; 
 import Sidebar from '../../components/Sidebar';
-// You'll need to install 'xlsx' library: npm install xlsx
 import * as XLSX from 'xlsx';
 
 const StudentData = () => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      fullName: "Muhammad John Doe",
-      nis: "1234567890",
-      nisn: "349234234",
-      classId: "12 PPLG 1",
-      fieldOfStudy: "PPLG",
-      gender: "Laki-Laki",
-      placeOfBirth: "Yogyakarta",
-      dateOfBrith: "19/08/2007",
-      religion: "Islam",
-      citizen: "Indonesia",
-      childOf: "Pertama",
-      numberOfSiblings: "5",
-      email: "john@example.com",
-      phone: "08783233423",
-      currentAddress: "Jl. Contoh No. 123, Yogyakarta",
-      district: "Kecamatan Contoh",
-      city: "Yogyakarta",
-      schoolTransport: "Ojek",
-      residenceStatus: "Rumah Sewa",
-      livingWith: "Orang Tua",
-      //orangtua//
-      parentName: "Muhammad Arfan",
-      parentStatus: "Kandung",
-      parentPlaceOfBirth: "Yogyakarta",
-      parentDateOfBirth: "15/01/1970",
-      parentLastEducation: "S1",
-      parentOccupation: "PNS",
-      parentIncomeEstimate: "5,000,000",
-      familyDependents: "3",
-      parentAddress: "Jl. Contoh No. 456, Yogyakarta",
-      parentPhoneNumber: "08783233424",
-      schoolName: "SMA Contoh",
-      diplomaScan: "link_to_diploma_scan",
-      diplomaSerialNumber: "1234567890",
-      uniformPhoto: "link_to_uniform_photo",
-      birthCertificateScan: "link_to_birth_certificate_scan",
-      familyCardScan: "link_to_family_card_scan",
-      schoolAdmissionPath: "Jalur Prestasi",
-    },
-    // Add more students as needed
-  ]);
-
+  const [data, setData] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
-  
-
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('token');
+        const response = await axios.get('/api/admin/siswa', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        });
+        console.log(response.data); // Check the structure here
+        setData(Array.isArray(response.data.data) ? response.data.data : []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   const sortData = (key) => {
     let sortedData = [...data];
@@ -94,10 +67,6 @@ const StudentData = () => {
     setSelectedIds([]);
   };
 
-  const deleteAccount = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
-
   const editAccount = (id) => {
     alert(`Editing account with id: ${id}`);
   };
@@ -106,8 +75,6 @@ const StudentData = () => {
     setCurrentPage(selected);
   };
 
-
-  // Import data from Excel
   const importData = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -117,15 +84,20 @@ const StudentData = () => {
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const importedData = XLSX.utils.sheet_to_json(worksheet);
-      const formattedData = importedData.map((item, index) => ({
-       
+      const formattedData = importedData.map((item) => ({
+        // Map the imported data to your student data structure
+        nama_lengkap: item['Nama Lengkap'],
+        nis: item['NIS'],
+        nisn: item['NISN'],
+        jurusan: item['Jurusan'],
+        kelas: item['Kelas'],
+        no_hp: item['No. HP'], // Ensure this field is mapped correctly
       }));
       setData([...data, ...formattedData]);
     };
     reader.readAsBinaryString(file);
   };
 
-  // Export data to Excel
   const exportData = () => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -134,7 +106,7 @@ const StudentData = () => {
   };
 
   const filteredData = data.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    item.nama_lengkap.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
@@ -177,7 +149,6 @@ const StudentData = () => {
             >
               Tambah Data
             </button>
-          
           </div>
         </div>
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -186,12 +157,12 @@ const StudentData = () => {
               <tr>
                 <th className="py-3 px-1 font-medium">Pilih</th>
                 <th className="py-3 px-2 font-medium">No</th>
-                <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('name')}>
-                  Nama {getSortIcon('name')}
+                <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('nama_lengkap')}>
+                  Nama {getSortIcon('nama_lengkap')}
                 </th>
-                <th className="py-3 px-4 text-left font-medium">Nisn</th>
-                <th className="py-3 px-4 text-left font-medium">Email</th>
-                <th className="py-3 px-4 text-left font-medium">No. Hp</th>
+                <th className="py-3 px-4 text-left font-medium">NIS</th>
+                <th className="py-3 px-4 text-left font-medium">NISN</th>
+                <th className="py-3 px-4 text-left font-medium">No. HP</th>
                 <th className="py-3 px-4 text-left font-medium">Kelas</th>
                 <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
@@ -205,11 +176,11 @@ const StudentData = () => {
                     </button>
                   </td>
                   <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
-                  <td className="py-3 px-4 border-b">{item.name}</td>
+                  <td className="py-3 px-4 border-b">{item.nama_lengkap}</td>
+                  <td className="py-3 px-4 border-b">{item.nis}</td>
                   <td className="py-3 px-4 border-b">{item.nisn}</td>
-                  <td className="py-3 px-4 border-b">{item.email}</td>
-                  <td className="py-3 px-4 border-b">{item.phone}</td>
-                  <td className="py-3 px-4 border-b">{item.classId}</td>
+                  <td className="py-3 px-4 border-b">{item.nisn}</td>
+                  <td className="py-3 px-4 border-b">{item.nisn}</td>
                   <td className="py-3 px-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
                       <button
@@ -220,13 +191,13 @@ const StudentData = () => {
                       </button>
                       <button
                         onClick={() => editAccount(item.id)}
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-yellow-600 hover:text-yellow-800"
                       >
                         <FaEdit />
                       </button>
                       <button
-                        onClick={() => deleteAccount(item.id)}
-                        className="text-red-500 hover:text-red-700"
+                        onClick={() => alert('Delete clicked')}
+                        className="text-red-600 hover:text-red-800"
                       >
                         <FaTrash />
                       </button>
@@ -238,19 +209,16 @@ const StudentData = () => {
           </table>
         </div>
         <div className="flex justify-between mt-4">
-          <Pagination
-            pageCount={pageCount}
-            onPageChange={handlePageChange}
-            currentPage={currentPage}
-            className="mt-4"
-          />
-            <button
-                onClick={deleteSelected}
-                disabled={selectedIds.length === 0}
-                className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-                >
-                Hapus Pilihan
-              </button>
+          <button
+            onClick={deleteSelected}
+            disabled={selectedIds.length === 0}
+            className={`${
+              selectedIds.length === 0 ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
+            } text-white px-3 py-2 rounded-md`}
+          >
+            Delete Selected
+          </button>
+          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         </div>
       </div>
     </>

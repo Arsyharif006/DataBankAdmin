@@ -30,8 +30,8 @@ const menus = [
     icon: <RiSchoolLine />,
     items: [
       { name: "Data Mata Pelajaran", link: "/matapelajaran-admin" },
-      { name: "Data Extrakulikuler", link: "/extrakulikuler" },
-      { name: "Data Ruangan", link: "/ruangan" },
+      { name: "Data Extrakulikuler", link: "/extrakulikuler-admin" },
+      { name: "Data Ruangan", link: "/ruangan-admin" },
       { name: "Data Jurusan", link: "/jurusan-admin" },
       { name: "Data Kelas", link: "/kelas-admin" },
     ],

@@ -18,6 +18,8 @@ import CourseDataAdmin from '../pages/SchoolManagement/CourseData.jsx';
 import DepartmentDataAdmin from '../pages/SchoolManagement/DepartmentData.jsx';
 import ClassDataAdmin from '../pages/SchoolManagement/ClassData.jsx';
 import AuditLogAdmin from '../pages/AuditLog.jsx';
+import RoomDataAdmin from './../pages/SchoolManagement/RoomData.jsx';
+import ExtracurricularDataAdmin from './../pages/SchoolManagement/ExtracurricularData.jsx';
 
 
 
@@ -130,6 +132,30 @@ export default function RoutesIndex() {
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
                             <AuditLogAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/ruangan-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <RoomDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/extrakulikuler-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <ExtracurricularDataAdmin />
                         </PrivateRoutes>
                     </Suspense>
 
