@@ -98,8 +98,7 @@ const AddClassModal = ({ closeModal, fetchData }) => {
               className="border rounded w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
-              <option value="" disabled>Pilih
-                 Tingkat</option>
+              <option value="" disabled>Pilih Tingkat</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
