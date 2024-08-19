@@ -23,7 +23,6 @@ const StudentData = () => {
             Authorization: `Bearer ${token}`
           },
         });
-        console.log(response.data); // Check the structure here
         setData(Array.isArray(response.data.data) ? response.data.data : []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -101,35 +100,24 @@ const StudentData = () => {
     setCurrentPage(selected);
   };
 
-  const importData = async (event) => {
+   // Import data from Excel
+   const importData = async (event) => {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const binaryStr = e.target.result;
-      const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-      const importedData = XLSX.utils.sheet_to_json(worksheet);
-      
-      try {
-        const token = Cookies.get('token');
-        await axios.post('/api/admin/students/import', importedData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        // Refresh data after import
-        const response = await axios.get('/api/admin/siswa', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setData(Array.isArray(response.data.data) ? response.data.data : []);
-      } catch (error) {
-        console.error('Error importing data:', error);
-      }
-    };
-    reader.readAsBinaryString(file);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = Cookies.get('token');
+      await axios.post('api/admin/students/import', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+    } catch (error) {
+      console.error('Error importing data:', error);
+    }
   };
 
   const exportData = () => {

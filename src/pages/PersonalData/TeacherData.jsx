@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../../api/Index';
+import Cookies from 'js-cookie';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import Sidebar from '../../components/Sidebar';
@@ -6,82 +8,41 @@ import Pagination from '../../components/Pagination'; // Import the Pagination c
 import * as XLSX from 'xlsx';
 
 const TeacherData = () => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      fullName: 'Aria Isha Nareswari', 
-      name: 'Arsha', 
-      nuptk: '123456789', 
-      gender: 'perempuan', 
-      placeOfBirth: 'Bandung', 
-      dateOfBirth: '19 08 2001', 
-      nip: '200107192020072001', 
-      employmentStatus: 'Pegawai tetap', 
-      ptkType: 'Guru kelas', 
-      religion: 'Islam', 
-      address: 'Jln.Cibogor', 
-      rt: '07', 
-      rw: '12', 
-      dusun: 'Cilayung', 
-      village: 'Cilayung',
-      subDistrict: 'Jatinangor', 
-      postalCode: '45360', 
-      phone: '081234567890', 
-      mobile: '085346146849',
-      email: 'ariarshanaaa@gmail.com', 
-      additionalTask: 'Guru piket',
-      cpnsSK: '813.3/932/BKD-2019', 
-      cpnsDate: '02 03 2020', 
-      appointmentSK: '821.3/0847/BKD-2020',
-      appointmentDate: '02 03 2021', 
-      appointingInstitution: 'BKN Sumedang', 
-      rankGroup: 'IIIA', 
-      education: 'S1-Pendidikan Guru Sekolah Dasar',
-      salary: 'Rp 4.575.200.7',
-      categories: "Guru"
-    },
-    {
-      id: 2,
-      fullName: 'Muhammad Arfan', 
-      name: 'Arfan', 
-      nuptk: '123456789', 
-      gender: 'Laki - laki', 
-      placeOfBirth: 'Bandung', 
-      dateOfBirth: '19 08 2001', 
-      nip: '200107192020072001', 
-      employmentStatus: 'Pegawai tetap', 
-      ptkType: 'Guru kelas', 
-      religion: 'Islam', 
-      address: 'Jln.Cibogor', 
-      rt: '07', 
-      rw: '12', 
-      dusun: 'Cilayung', 
-      village: 'Cilayung',
-      subDistrict: 'Jatinangor', 
-      postalCode: '45360', 
-      phone: '081234567890', 
-      mobile: '085346146849',
-      email: 'ariarshanaaa@gmail.com', 
-      additionalTask: 'Guru piket',
-      cpnsSK: '813.3/932/BKD-2019', 
-      cpnsDate: '02 03 2020', 
-      appointmentSK: '821.3/0847/BKD-2020',
-      appointmentDate: '02 03 2021', 
-      appointingInstitution: 'BKN Sumedang', 
-      rankGroup: 'IIIA', 
-      education: 'S1-Pendidikan Guru Sekolah Dasar',
-      salary: 'Rp 4.575.200.7',
-      categories: "Staff"
-    },
-  ]);
-
-
+  const [data, setData] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('token');
+        const response = await axios.get('api/admin/gurustaff', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        // Ensure that response.data.data is an array before setting it to state
+        if (Array.isArray(response.data.data)) {
+          setData(response.data.data);
+        } else {
+          console.error('Unexpected data format:', response.data);
+          setData([]); // Fallback to an empty array if the data is not as expected
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setData([]); // Handle errors by setting an empty array
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  
 
   const sortData = (key) => {
     let sortedData = [...data];
@@ -122,8 +83,18 @@ const TeacherData = () => {
     setSelectedIds([]);
   };
 
-  const deleteAccount = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const deleteAccount = async (id) => {
+    try {
+      const token = Cookies.get('token');
+      await axios.delete(`api/admin/gurustaff/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(data.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
   };
 
   const editAccount = (id) => {
@@ -135,23 +106,24 @@ const TeacherData = () => {
     setCurrentPage(selected);
   };
 
-  
   // Import data from Excel
-  const importData = (event) => {
+  const importData = async (event) => {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const binaryStr = e.target.result;
-      const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-      const importedData = XLSX.utils.sheet_to_json(worksheet);
-      const formattedData = importedData.map((item, index) => ({
-      
-      }));
-      setData([...data, ...formattedData]);
-    };
-    reader.readAsBinaryString(file);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = Cookies.get('token');
+      await axios.post('api/admin/employees/import', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+    } catch (error) {
+      console.error('Error importing data:', error);
+    }
   };
 
   // Export data to Excel
@@ -163,97 +135,93 @@ const TeacherData = () => {
   };
 
   const renderTable = (categories) => {
-    const filteredData = data.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) && item.categories === categories // Filter by categories
-    );
-
+    const filteredData = data.filter((item) => {
+      if (categories === 'Guru') {
+        return item.employee_type_id === 1 || item.employee_type_id === 2;
+      }
+      if (categories === 'Staff') {
+        return item.employee_type_id === 3;
+      }
+      return false;
+    });
+  
     const pageCount = Math.ceil(filteredData.length / itemsPerPage);
     const offset = currentPage * itemsPerPage;
     const currentPageData = filteredData.slice(offset, offset + itemsPerPage);
-
+  
     return (
       <>
-         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
           <table className="min-w-full bg-white">
             <thead className="bg-gray-700 text-gray-50">
-            <tr>
-              <th className=" text-center font-medium">
-                <span>Pilih</span>
-              </th>
-              <th className="py-3 px-2 text-center font-medium">No</th>
-              <th className="py-3 px-4 text-left font-medium cursor-pointer flex items-center" onClick={() => sortData('name')}>
-                Nama {getSortIcon('name')}
-              </th>
-              <th className="py-3 px-4 text-left font-medium">NIP</th>
-              <th className="py-3 px-4 text-left font-medium">Email</th>
-              <th className="py-3 px-4 text-left font-medium">No. HP</th>
-              <th className="py-3 px-4 text-left font-medium">Sebagai</th>
-              <th className="py-3 px-4 text-center font-medium">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
-            {currentPageData.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-3 text-center">
-                  <button onClick={() => toggleSelect(item.id)}>
-                    {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">{offset + index + 1}</td>
-                <td className="py-3 px-4 border-b">{item.name}</td>
-                <td className="py-3 px-4 border-b">{item.nip}</td>
-                <td className="py-3 px-4 border-b">{item.email}</td>
-                <td className="py-3 px-4 border-b">{item.phone}</td>
-                <td className="py-3 px-4 border-b">{item.categories}</td>
-                <td className="px-5 py-4 border-b text-center">
+              <tr>
+                <th className="text-center font-medium">Pilih</th>
+                <th className="py-3 px-2 text-center font-medium">No</th>
+                <th className="py-3 px-4 text-left font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
+                  Nama {getSortIcon('nama')}
+                </th>
+                <th className="py-3 px-4 text-left font-medium">NIP</th>
+                <th className="py-3 px-4 text-left font-medium">Email</th>
+                <th className="py-3 px-4 text-left font-medium">No. HP</th>
+                <th className="py-3 px-4 text-left font-medium">Sebagai</th>
+                <th className="py-3 px-4 text-center font-medium">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-700">
+              {currentPageData.map((item, index) => (
+                <tr key={item.id} className="border-b hover:bg-gray-100">
+                  <td className="px-4 py-3 text-center">
+                    <button onClick={() => toggleSelect(item.id)}>
+                      {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 text-center">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.nama}</td>
+                  <td className="py-3 px-4 border-b">{item.nip}</td>
+                  <td className="py-3 px-4 border-b">{item.email}</td>
+                  <td className="py-3 px-4 border-b">{item.hp}</td>
+                  <td className="py-3 px-4 border-b">{item.jenis_ptk}</td>
+                  <td className="px-5 py-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
-                      <button
-                        onClick={() => alert('View clicked')}
-                        className="text-blue-700 hover:text-blue-900"
-                      >
+                      <button onClick={() => alert('View clicked')} className="text-blue-700 hover:text-blue-900">
                         <FaEye />
                       </button>
-                      <button
-                        onClick={() => editAccount(item.id)}
-                        className="text-blue-500 hover:text-blue-700"
-                      >
+                      <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-700">
                         <FaEdit />
                       </button>
-                      <button
-                        onClick={() => deleteAccount(item.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
+                      <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-700">
                         <FaTrash />
                       </button>
                     </div>
                   </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className='flex mt-5 justify-between'>
-        <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
-        <button
-              onClick={deleteSelected}
-              disabled={selectedIds.length === 0}
-              className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-              >
-              Hapus Pilihan
-            </button>
-              </div>
+        <div className="flex mt-5 justify-between">
+          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+          <button
+            onClick={deleteSelected}
+            disabled={selectedIds.length === 0}
+            className={`bg-red-500 text-white px-3 h-11 rounded ${
+              selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
+            }`}
+          >
+            Hapus Pilihan
+          </button>
+        </div>
       </>
     );
   };
 
   return (
     <>
-      <Sidebar/>
+      <Sidebar />
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-Start items-Start mb-12">
           <h1 className="text-2xl font-semibold text-gray-800">Data Guru Dan Staff</h1>
-          <p className='text-gray-500'>/ dataguru-admin</p>
+          <p className="text-gray-500">/ dataguru-admin</p>
         </div>
 
         <div className="flex justify-between mb-4">
@@ -276,7 +244,13 @@ const TeacherData = () => {
             </button>
             <label className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200 flex items-center cursor-pointer">
               Import
-              <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
+              <input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={importData}
+        className="hidden"
+    />
+
             </label>
             <button
               onClick={() => alert('Add Data clicked')}
@@ -284,10 +258,8 @@ const TeacherData = () => {
             >
               Tambah Data
             </button>
-          
           </div>
         </div>
-
         <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
           <TabList className="flex justify-center mb-4 border-b border-gray-300">
             {['Guru', 'Staff'].map((role, index) => (
@@ -307,7 +279,6 @@ const TeacherData = () => {
           <TabPanel>{renderTable('Guru')}</TabPanel>
           <TabPanel>{renderTable('Staff')}</TabPanel>
         </Tabs>
-        
       </div>
     </>
   );
