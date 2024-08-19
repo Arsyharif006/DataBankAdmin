@@ -145,7 +145,7 @@ const CourseData = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Cari Nama Matapelajaran..."
+              placeholder="Cari Berdasarkan Nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -163,8 +163,8 @@ const CourseData = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-gray-700 text-gray-50">
               <tr>
-                <th className="py-3 px-4 font-medium ">Pilih</th>
-                <th className="py-3 px-4 font-medium">No</th>
+                <th className="py-3 px-4 font-medium">Pilih</th>
+                <th className="py-3 px-4 font-medium text-start">No</th>
                 <th className="py-3 px-4 font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
                   Nama Matapelajaran {getSortIcon('nama')}
                 </th>
@@ -180,7 +180,7 @@ const CourseData = () => {
           {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
         </button>
       </td>
-      <td className="py-3 px-4 border-b text-center ">{offset + index + 1}</td>
+      <td className="py-3 px-4 border-b text-start">{offset + index + 1}</td>
       <td className="py-3 px-4 border-b">{item.nama}</td>
       
       <td className="py-3 px-4 border-b">

@@ -16,25 +16,22 @@ const ClassData = () => {
 
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        
-        // Fetch class data
-        const classResponse = await axios.get('/api/admin/kelas', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const rooms = classResponse.data.data;
-        setData(rooms);
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const classResponse = await axios.get('/api/admin/kelas', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const rooms = classResponse.data.data;
+      setData(rooms);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -70,8 +67,6 @@ const ClassData = () => {
   const deleteSelected = async () => {
     try {
       const token = Cookies.get('token');
-      
-      // Create an array of delete requests
       const deleteRequests = selectedIds.map(id =>
         axios.delete(`/api/admin/kelas/${id}`, {
           headers: {
@@ -79,11 +74,7 @@ const ClassData = () => {
           },
         })
       );
-  
-      // Execute all delete requests concurrently
       await Promise.all(deleteRequests);
-  
-      // Filter out deleted rooms from the data
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
     } catch (error) {
@@ -126,8 +117,7 @@ const ClassData = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    // Refresh data after closing the modal
-    fetchData();
+    fetchData(); // Refresh data after closing the modal
   };
 
   return (
