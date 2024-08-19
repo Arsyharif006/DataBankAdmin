@@ -62,9 +62,35 @@ const StudentData = () => {
     });
   };
 
-  const deleteSelected = () => {
-    setData(data.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
+  const deleteSelected = async () => {
+    try {
+      const token = Cookies.get('token');
+      for (const id of selectedIds) {
+        await axios.delete(`/api/admin/siswa/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      setData(data.filter((item) => !selectedIds.includes(item.id)));
+      setSelectedIds([]);
+    } catch (error) {
+      console.error('Error deleting data:', error);
+    }
+  };
+
+  const deleteItem = async (id) => {
+    try {
+      const token = Cookies.get('token');
+      await axios.delete(`/api/admin/siswa/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(data.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting data:', error);
+    }
   };
 
   const editAccount = (id) => {
@@ -75,25 +101,33 @@ const StudentData = () => {
     setCurrentPage(selected);
   };
 
-  const importData = (event) => {
+  const importData = async (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const binaryStr = e.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'binary' });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const importedData = XLSX.utils.sheet_to_json(worksheet);
-      const formattedData = importedData.map((item) => ({
-        // Map the imported data to your student data structure
-        nama_lengkap: item['Nama Lengkap'],
-        nis: item['NIS'],
-        nisn: item['NISN'],
-        jurusan: item['Jurusan'],
-        kelas: item['Kelas'],
-        no_hp: item['No. HP'], // Ensure this field is mapped correctly
-      }));
-      setData([...data, ...formattedData]);
+      
+      try {
+        const token = Cookies.get('token');
+        await axios.post('/api/admin/students/import', importedData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // Refresh data after import
+        const response = await axios.get('/api/admin/siswa', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setData(Array.isArray(response.data.data) ? response.data.data : []);
+      } catch (error) {
+        console.error('Error importing data:', error);
+      }
     };
     reader.readAsBinaryString(file);
   };
@@ -122,13 +156,13 @@ const StudentData = () => {
           <p className='text-gray-500'>/ datasiswa-admin</p>
         </div>
         <div className="flex justify-between mb-4">
-          <div className="relative">
+        <div className="relative">
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Cari berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded-md py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
@@ -158,12 +192,13 @@ const StudentData = () => {
                 <th className="py-3 px-1 font-medium">Pilih</th>
                 <th className="py-3 px-2 font-medium">No</th>
                 <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('nama_lengkap')}>
-                  Nama {getSortIcon('nama_lengkap')}
+                  Nama lengkap {getSortIcon('nama_lengkap')}
                 </th>
                 <th className="py-3 px-4 text-left font-medium">NIS</th>
                 <th className="py-3 px-4 text-left font-medium">NISN</th>
                 <th className="py-3 px-4 text-left font-medium">No. HP</th>
                 <th className="py-3 px-4 text-left font-medium">Kelas</th>
+                <th className="py-3 px-4 text-left font-medium">Angkatan</th>
                 <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
             </thead>
@@ -179,8 +214,9 @@ const StudentData = () => {
                   <td className="py-3 px-4 border-b">{item.nama_lengkap}</td>
                   <td className="py-3 px-4 border-b">{item.nis}</td>
                   <td className="py-3 px-4 border-b">{item.nisn}</td>
-                  <td className="py-3 px-4 border-b">{item.nisn}</td>
-                  <td className="py-3 px-4 border-b">{item.nisn}</td>
+                  <td className="py-3 px-4 border-b">{item.no_hp}</td>
+                  <td className="py-3 px-4 border-b">{item.classroom.nama}</td>
+                  <td className="py-3 px-4 border-b">{item.angkatan}</td>
                   <td className="py-3 px-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
                       <button
@@ -196,7 +232,7 @@ const StudentData = () => {
                         <FaEdit />
                       </button>
                       <button
-                        onClick={() => alert('Delete clicked')}
+                        onClick={() => deleteItem(item.id)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <FaTrash />
@@ -209,6 +245,7 @@ const StudentData = () => {
           </table>
         </div>
         <div className="flex justify-between mt-4">
+          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
           <button
             onClick={deleteSelected}
             disabled={selectedIds.length === 0}
@@ -216,9 +253,8 @@ const StudentData = () => {
               selectedIds.length === 0 ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
             } text-white px-3 py-2 rounded-md`}
           >
-            Delete Selected
+            Hapus Pilihan
           </button>
-          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         </div>
       </div>
     </>

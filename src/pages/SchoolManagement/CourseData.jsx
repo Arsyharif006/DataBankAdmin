@@ -145,7 +145,7 @@ const CourseData = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Cari Berdasarkan Nama..."
+              placeholder="Cari berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

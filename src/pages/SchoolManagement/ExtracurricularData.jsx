@@ -141,7 +141,7 @@ const ExtracurricularData = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search by room name..."
+              placeholder="Cari berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -159,10 +159,10 @@ const ExtracurricularData = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-gray-700 text-gray-50">
               <tr>
-                <th className="py-3 px-4 font-medium text-start">Pilih</th>
-                <th className="text-left py-3 px-4 font-medium">No</th>
+                <th className="py-3 px-4 font-medium">Pilih</th>
+                <th className="py-3 px-4 font-medium text-start">No</th>
                 <th className="text-left py-3 px-4 font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
-                  Nama extrakulikuler {getSortIcon('nama')}
+                  Nama Extrakulikuler {getSortIcon('nama')}
                 </th>
                 <th className="text-start py-3 px-4 font-medium">Aksi</th>
               </tr>
@@ -170,7 +170,7 @@ const ExtracurricularData = () => {
             <tbody>
               {currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="py-3 px-4 border-b text-start">
+                  <td className="py-3 px-4 border-b text-center">
                     <button onClick={() => toggleSelect(item.id)}>
                       {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
                     </button>

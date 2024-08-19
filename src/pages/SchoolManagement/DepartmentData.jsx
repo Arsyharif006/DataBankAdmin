@@ -141,7 +141,7 @@ const DepartmenData = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search by room name..."
+              placeholder="Cari Berdasarkan Nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -159,7 +159,7 @@ const DepartmenData = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-gray-700 text-gray-50">
               <tr>
-                <th className="py-3 px-4 font-medium text-start">Pilih</th>
+                <th className="py-3 px-4 font-medium">Pilih</th>
                 <th className="text-left py-3 px-4 font-medium">No</th>
                 <th className="text-left py-3 px-4 font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
                   Nama Jurusan {getSortIcon('nama')}
@@ -170,7 +170,7 @@ const DepartmenData = () => {
             <tbody>
               {currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="py-3 px-4 border-b text-start">
+                  <td className="py-3 px-4 border-b text-center">
                     <button onClick={() => toggleSelect(item.id)}>
                       {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
                     </button>

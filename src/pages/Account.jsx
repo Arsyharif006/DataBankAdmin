@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../api/Index'; // Ensure this is the correct path to your axios instance
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch } from 'react-icons/fa';
-import Pagination from '../components/Pagination'; 
+import Pagination from '../components/Pagination';
 import Sidebar from '../components/Sidebar';
 import AddAccountModal from '../components/AddAccountModal';
 import EditAccountModal from '../components/EditAccountModal';
+import Cookies from 'js-cookie';
 
 const Account = () => {
-  const [data, setData] = useState([
-    { id: 1,  username: 'Admin123', password: '123456', date: '2024-08-11', role: 'Admin' },
-    { id: 2,  username: 'janeeee', password: 'abcdef', date: '2024-07-20', role: 'Admin' },
-    { id: 3,  username: 'alice0492', password: 'password', date: '2024-05-05', role: 'Client' },
-  ]);
-
+  const [data, setData] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +18,33 @@ const Account = () => {
   const [editData, setEditData] = useState(null);
   const itemsPerPage = 5;
 
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/users', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const users = response.data.users;
+
+      if (Array.isArray(users)) {
+        setData(users);
+      } else {
+        console.error('Unexpected data format:', users);
+        setData([]);  // Fallback to empty array
+      }
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+      setData([]);  // Fallback to empty array
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Call fetchData when the component mounts
+  }, []);
+
   const sortData = (key) => {
     let sortedData = [...data];
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -28,7 +52,7 @@ const Account = () => {
       setSortConfig({ key, direction: 'descending' });
     } else {
       sortedData.sort((a, b) => {
-        if (key === 'date') {
+        if (key === 'created_at') {
           return new Date(a[key]) > new Date(b[key]) ? 1 : -1;
         }
         return a[key] > b[key] ? 1 : -1;
@@ -46,22 +70,46 @@ const Account = () => {
   };
 
   const toggleSelect = (id) => {
-    setSelectedIds(prevSelected => {
-      if (prevSelected.includes(id)) {
-        return prevSelected.filter(selectedId => selectedId !== id);
-      } else {
-        return [...prevSelected, id];
+    setSelectedIds((prevSelected) =>
+      prevSelected.includes(id) ? prevSelected.filter((selectedId) => selectedId !== id) : [...prevSelected, id]
+    );
+  };
+
+  const deleteSelected = async () => {
+    try {
+      const token = Cookies.get('token');
+      if (selectedIds.length === 0) {
+        return; // No selected items to delete
       }
-    });
+
+      // Perform the deletion request
+      await axios.delete(`/api/admin/users`, {
+        data: { ids: selectedIds },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Refresh the data and clear selected ids
+      fetchData();
+      setSelectedIds([]);
+    } catch (error) {
+      console.error('Error deleting accounts:', error);
+    }
   };
 
-  const deleteSelected = () => {
-    setData(data.filter(item => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
-  };
-
-  const deleteAccount = (id) => {
-    setData(data.filter(item => item.id !== id));
+  const deleteAccount = async (id) => {
+    try {
+      const token = Cookies.get('token');
+      await axios.delete(`/api/admin/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
   };
 
   const editAccount = (id) => {
@@ -70,7 +118,7 @@ const Account = () => {
     setIsEditModalOpen(true);
   };
 
-  const filteredData = data.filter(item =>
+  const filteredData = data.filter((item) =>
     item.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -94,7 +142,7 @@ const Account = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Cari berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -124,13 +172,13 @@ const Account = () => {
               <tr>
                 <th className="py-3 px-1 font-medium">Pilih</th>
                 <th className="py-3 px-2 font-medium">No</th>
+                <th className="py-3 px-4 text-left font-medium">Name</th>
                 <th className="py-3 px-4 font-medium text-left cursor-pointer" onClick={() => sortData('username')}>
                   Username {getSortIcon('username')}
                 </th>
-                <th className="py-3 px-4 text-left font-medium">Password</th>
                 <th className="py-3 px-4 text-left font-medium">Peran</th>
-                <th className="py-3 px-4 text-left font-medium cursor-pointer" onClick={() => sortData('date')}>
-                  Date Created {getSortIcon('date')}
+                <th className="py-3 px-4 text-left font-medium cursor-pointer" onClick={() => sortData('created_at')}>
+                  Date Created {getSortIcon('created_at')}
                 </th>
                 <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
@@ -144,10 +192,10 @@ const Account = () => {
                     </button>
                   </td>
                   <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.name}</td>
                   <td className="py-3 px-4 border-b">{item.username}</td>
-                  <td className="py-3 px-4 border-b">{item.password}</td>
-                  <td className="py-3 px-4 border-b">{item.role}</td>
-                  <td className="py-3 px-4 border-b">{new Date(item.date).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 border-b">{item.role.name}</td>
+                  <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleDateString()}</td>
                   <td className="py-3 px-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
                       <button
@@ -174,14 +222,29 @@ const Account = () => {
           <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         </div>
       </div>
-      <AddAccountModal isOpen={isAddModalOpen} onRequestClose={() => setIsAddModalOpen(false)} onAdd={(newAccount) => {
-        setData([...data, { ...newAccount, id: data.length + 1, date: new Date().toISOString() }]);
-        setIsAddModalOpen(false);
-      }} />
-      <EditAccountModal isOpen={isEditModalOpen} onRequestClose={() => setIsEditModalOpen(false)} onEdit={(updatedAccount) => {
-        setData(data.map((item) => (item.id === updatedAccount.id ? updatedAccount : item)));
-        setIsEditModalOpen(false);
-      }} accountData={editData} />
+      
+      {/* Add Modal */}
+      {isAddModalOpen && (
+        <AddAccountModal
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={() => {
+            setIsAddModalOpen(false);
+            fetchData();
+          }}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && editData && (
+        <EditAccountModal
+          data={editData}
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={() => {
+            setIsEditModalOpen(false);
+            fetchData();
+          }}
+        />
+      )}
     </>
   );
 };
