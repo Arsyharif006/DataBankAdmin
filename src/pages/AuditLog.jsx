@@ -1,57 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../api/Index';
+import Cookies from 'js-cookie';
 import Sidebar from '../components/Sidebar';
-import Pagination from '../components/Pagination'; // Ensure this component exists
-import { FaEye } from 'react-icons/fa';
+import Pagination from '../components/Pagination';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 const AuditLog = () => {
-  const data = [
-    {
-      date: '20 Mar 23 12:00',
-      organizer: 'Blacktea',
-      user: 'james@blacktea.com',
-      activity: 'Account Creations',
-      subActivity: 'Signin success',
-      details: 'View Details',
-      ip: '192.158.1.38'
-    },
-    {
-      date: '20 Mar 23 12:00',
-      organizer: 'Blacktea',
-      user: 'james@blacktea.com',
-      activity: 'Account Creations',
-      subActivity: 'Signin failed',
-      details: 'View Details',
-      ip: '192.158.1.38'
-    }
-  ];
-
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
   const itemsPerPage = 5;
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/audit-logs', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (Array.isArray(response.data.data.data)) {
+        setData(response.data.data.data);
+        setFilteredData(response.data.data.data); // Set filteredData to the full dataset initially
+      } else {
+        console.error('Unexpected data format:', response.data);
+        setData([]);
+        setFilteredData([]);
+      }
+    } catch (error) {
+      console.error('Error fetching audit logs:', error);
+      setData([]);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    handleFilterByDate();
+  }, [startDate, endDate]);
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
-  const handleFilterByDate = (data) => {
+  const handleFilterByDate = () => {
     if (!startDate && !endDate) {
-      return data;
+      setFilteredData(data);
+      return;
     }
 
-    const filtered = data.filter(item => {
-      const itemDate = new Date(item.date);
+    const filtered = data.filter((item) => {
+      const itemDate = new Date(item.created_at);
       const start = startDate ? new Date(startDate) : new Date('1900-01-01');
       const end = endDate ? new Date(endDate) : new Date();
 
       return itemDate >= start && itemDate <= end;
     });
 
-    return filtered;
+    setFilteredData(filtered);
   };
 
-  const filteredData = handleFilterByDate(data);
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      if (key === 'created_at') {
+        return direction === 'ascending'
+          ? new Date(a[key]) - new Date(b[key])
+          : new Date(b[key]) - new Date(a[key]);
+      } else {
+        return direction === 'ascending'
+          ? a[key].localeCompare(b[key])
+          : b[key].localeCompare(a[key]);
+      }
+    });
+    setFilteredData(sortedData);
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return <FaSort />;
+    }
+    return sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />;
+  };
 
   const offset = currentPage * itemsPerPage;
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
@@ -63,10 +109,10 @@ const AuditLog = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Audit Log</h1>
-          <p className='text-gray-500'>/ auditlog-admin</p>
+          <p className="text-gray-500">/ auditlog-admin</p>
         </div>
         <div className="flex justify-between items-center mb-4">
-          <span className="text-gray-600">{filteredData.length} results found</span>
+          <span className="text-gray-600">{filteredData.length} hasil ditemukan</span>
         </div>
         <div className="flex justify-between space-x-4 mb-4">
           <div className="flex space-x-4">
@@ -109,28 +155,34 @@ const AuditLog = () => {
             <thead className="bg-gray-700 text-gray-50">
               <tr>
                 <th className="text-left py-3 px-4 font-medium">No</th>
-                <th className="text-left py-3 px-4 font-medium">Organizer</th>
-                <th className="text-left py-3 px-4 font-medium">Activities</th>
-                <th className="text-left py-3 px-4 font-medium">Sub activities</th>
-                <th className="text-left py-3 px-4 font-medium">IP address</th>
-                <th className="text-left py-3 px-4 font-medium">Details</th>
-                <th className="text-left py-3 px-4 font-medium">Date</th>
+                <th className="text-left py-3 px-4 font-medium cursor-pointer" onClick={() => handleSort('user.name')}>
+                  <div className="flex items-center">
+                    Nama User
+                    <span className="ml-2">{getSortIcon('user.name')}</span>
+                  </div>
+                </th>
+                <th className="text-left py-3 px-4 font-medium">Aktivitas</th>
+                <th className="text-left py-3 px-4 font-medium">Model</th>
+                <th className="text-left py-3 px-4 font-medium">Respon</th>
+                <th className="text-left py-3 px-4 font-medium">Respon Code</th>
+                <th className="text-left py-3 px-4 font-medium cursor-pointer" onClick={() => handleSort('created_at')}>
+                  <div className="flex items-center">
+                    Tanggal
+                    <span className="ml-2">{getSortIcon('created_at')}</span>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
               {currentData.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
-                  <td className="py-3 px-4 border-b">{item.organizer}</td>
-                  <td className="py-3 px-4 border-b">{item.activity}</td>
-                  <td className="py-3 px-4 border-b">{item.subActivity}</td>
-                  <td className="py-3 px-4 border-b">{item.ip}</td>
-                  <td className="py-3 px-4 border-b">
-                    <button onClick={() => alert(`View details for ${item.ip}`)} className="text-blue-500 hover:text-blue-600">
-                      <FaEye />
-                    </button>
-                  </td>
-                  <td className="py-3 px-4 border-b">{item.date}</td>
+                  <td className="py-3 px-4 border-b">{item.user.name}</td>
+                  <td className="py-3 px-4 border-b">{item.action}</td>
+                  <td className="py-3 px-4 border-b">{item.model}</td>
+                  <td className="py-3 px-4 border-b">{item.response}</td>
+                  <td className="py-3 px-4 border-b">{item.response_code}</td>
+                  <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

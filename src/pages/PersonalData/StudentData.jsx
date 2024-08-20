@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../api/Index';
 import Cookies from 'js-cookie';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
-import Pagination from '../../components/Pagination'; 
+import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import * as XLSX from 'xlsx';
+import StudentDetailsModal from '../../components/ShowStudentsModal'; // Assume this is the modal component
+import AddStudentModal from '../../components/AddStudentModal'; 
 
 const StudentData = () => {
   const [data, setData] = useState([]);
@@ -12,7 +14,18 @@ const StudentData = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // State for Add Modal
   const itemsPerPage = 5;
+
+
+  // Function to handle adding a new student
+  const handleAddStudent = (newStudent) => {
+    // Add the new student to the data array
+    setData([...data, newStudent]);
+    setIsAddModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +36,7 @@ const StudentData = () => {
             Authorization: `Bearer ${token}`
           },
         });
+        console.log(response.data.data)
         setData(Array.isArray(response.data.data) ? response.data.data : []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -100,8 +114,7 @@ const StudentData = () => {
     setCurrentPage(selected);
   };
 
-   // Import data from Excel
-   const importData = async (event) => {
+  const importData = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
@@ -135,6 +148,11 @@ const StudentData = () => {
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
+  const viewStudentDetails = (student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <Sidebar />
@@ -144,7 +162,7 @@ const StudentData = () => {
           <p className='text-gray-500'>/ datasiswa-admin</p>
         </div>
         <div className="flex justify-between mb-4">
-        <div className="relative">
+          <div className="relative">
             <input
               type="text"
               placeholder="Cari berdasarkan nama..."
@@ -166,9 +184,9 @@ const StudentData = () => {
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
             <button
-              onClick={() => alert('Add Data clicked')}
-              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
-            >
+            onClick={() => setIsAddModalOpen(true)} // Open the Add Modal
+            className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
+          >
               Tambah Data
             </button>
           </div>
@@ -205,46 +223,51 @@ const StudentData = () => {
                   <td className="py-3 px-4 border-b">{item.no_hp}</td>
                   <td className="py-3 px-4 border-b">{item.classroom.nama}</td>
                   <td className="py-3 px-4 border-b">{item.angkatan}</td>
-                  <td className="py-3 px-4 border-b text-center">
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        onClick={() => alert('View clicked')}
-                        className="text-blue-700 hover:text-blue-900"
-                      >
-                        <FaEye />
-                      </button>
-                      <button
-                        onClick={() => editAccount(item.id)}
-                        className="text-yellow-600 hover:text-yellow-800"
-                      >
+                  <td className="py-3 px-4 border-b text-center justify-center space-x-2">
+                    <button onClick={() => viewStudentDetails(item)} className="text-blue-700 hover:text-blue-900">
+                      <FaEye />
+                    </button>
+                    <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-700">
                         <FaEdit />
                       </button>
-                      <button
-                        onClick={() => deleteItem(item.id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
+                      <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-700">
                         <FaTrash />
                       </button>
-                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between mt-4">
-          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        <div className="flex justify-between items-center mt-4">
+          <Pagination
+            pageCount={pageCount}
+            onPageChange={handlePageChange}
+          />
           <button
             onClick={deleteSelected}
-            disabled={selectedIds.length === 0}
-            className={`${
-              selectedIds.length === 0 ? 'bg-gray-400' : 'bg-red-500 hover:bg-red-600'
-            } text-white px-3 py-2 rounded-md`}
+            className={`bg-red-500 text-white px-3 h-11 rounded ${
+              selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
+            }`}
           >
             Hapus Pilihan
           </button>
         </div>
       </div>
+      {isModalOpen && selectedStudent && (
+        <StudentDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          student={selectedStudent}
+        />
+      )}
+        {isAddModalOpen && (
+        <AddStudentModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSubmit={handleAddStudent}
+        />
+      )}
     </>
   );
 };

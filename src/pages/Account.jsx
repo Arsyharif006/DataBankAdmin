@@ -81,15 +81,18 @@ const Account = () => {
       if (selectedIds.length === 0) {
         return; // No selected items to delete
       }
-
-      // Perform the deletion request
-      await axios.delete(`/api/admin/users`, {
-        data: { ids: selectedIds },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+  
+      // Perform the deletion requests for each selected ID
+      await Promise.all(
+        selectedIds.map(async (id) => {
+          await axios.delete(`/api/admin/users/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        })
+      );
+  
       // Refresh the data and clear selected ids
       fetchData();
       setSelectedIds([]);
@@ -97,6 +100,7 @@ const Account = () => {
       console.error('Error deleting accounts:', error);
     }
   };
+  
 
   const deleteAccount = async (id) => {
     try {
@@ -163,6 +167,7 @@ const Account = () => {
             >
               Hapus Pilihan
             </button>
+
           </div>
         </div>
 
@@ -222,7 +227,7 @@ const Account = () => {
           <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         </div>
       </div>
-      
+
       {/* Add Modal */}
       {isAddModalOpen && (
         <AddAccountModal

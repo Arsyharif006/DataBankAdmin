@@ -20,6 +20,7 @@ import ClassDataAdmin from '../pages/SchoolManagement/ClassData.jsx';
 import AuditLogAdmin from '../pages/AuditLog.jsx';
 import RoomDataAdmin from './../pages/SchoolManagement/RoomData.jsx';
 import ExtracurricularDataAdmin from './../pages/SchoolManagement/ExtracurricularData.jsx';
+import Combo from './../pages/ContohModal.jsx';
 
 
 
@@ -156,6 +157,18 @@ export default function RoutesIndex() {
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
                             <ExtracurricularDataAdmin />
+                        </PrivateRoutes>
+                    </Suspense>
+
+                }
+            />
+            {/* private route "/dashboard" */}
+            <Route
+                path="/combo-admin"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <PrivateRoutes>
+                            <Combo />
                         </PrivateRoutes>
                     </Suspense>
 

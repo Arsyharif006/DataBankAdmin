@@ -78,10 +78,27 @@ const TeacherData = () => {
     });
   };
 
-  const deleteSelected = () => {
-    setData(data.filter((item) => !selectedIds.includes(item.id)));
-    setSelectedIds([]);
+  const deleteSelected = async () => {
+    try {
+      const token = Cookies.get('token');
+      
+      // Delete selected items from the backend
+      for (const id of selectedIds) {
+        await axios.delete(`api/admin/gurustaff/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      
+      // Remove deleted items from the state
+      setData(data.filter((item) => !selectedIds.includes(item.id)));
+      setSelectedIds([]); // Clear selection after deletion
+    } catch (error) {
+      console.error('Error deleting selected accounts:', error);
+    }
   };
+  
 
   const deleteAccount = async (id) => {
     try {
