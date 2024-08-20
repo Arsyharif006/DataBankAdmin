@@ -74,7 +74,7 @@ const ContohModal = () => {
                         </div>
                     </div>
                 </div>
-            </>
+            </div>
         </div>
     )
 }
