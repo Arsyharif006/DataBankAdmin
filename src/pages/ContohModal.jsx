@@ -69,7 +69,7 @@ const ContohModal = () => {
                                 <img alt="scan akte kelahiran" className="w-full h-full object-cover" />
                             </div>
                             <div className="w-24 h-32 border-2 border-gray-400 rounded-lg overflow-hidden shadow-md">
-                                <img alt="scan kartu Kluarga" className="w-full h-full object-cover" />
+                                <img alt="scan kartu Keluarga" className="w-full h-full object-cover" />
                             </div>
                         </div>
                     </div>
