@@ -92,11 +92,17 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
           <div className="grid grid-cols-2 gap-4 mt-4 text-gray-700">
             {/* Informasi Guru */}
             <div>
-              <label><strong>Nama:</strong></label>
+              <label><strong>Nama lengkap:</strong></label>
               <input type="text" name="nama" value={formData.nama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
+              <label><strong>NIP:</strong></label>
+              <input type="number" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+
               <label><strong>NUPTK:</strong></label>
-              <input type="text" name="nuptk" value={formData.nuptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <input type="number" name="nuptk" value={formData.nuptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+
+              <label><strong>Jenis PTK:</strong></label>
+              <input type="text" name="jenis_ptk" value={formData.jenis_ptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Jenis Kelamin:</strong></label>
               <select name="gender_id" value={formData.gender_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
@@ -105,26 +111,17 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
                 <option value="2">Perempuan</option>
               </select>
 
+              <label><strong>Agama:</strong></label>
+              <input type="text" name="agama" value={formData.agama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+
               <label><strong>Tempat Lahir:</strong></label>
-              <input type="text" name="tempat_lahir" value={formData.tempat_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <textarea type="text" name="tempat_lahir" value={formData.tempat_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tanggal Lahir:</strong></label>
               <input type="date" name="tanggal_lahir" value={formData.tanggal_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
-              <label><strong>NIP:</strong></label>
-              <input type="text" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
-
-              <label><strong>Status Kepegawaian:</strong></label>
-              <input type="text" name="status_kepegawaian" value={formData.status_kepegawaian} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
-
-              <label><strong>Jenis PTK:</strong></label>
-              <input type="text" name="jenis_ptk" value={formData.jenis_ptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
-
-              <label><strong>Agama:</strong></label>
-              <input type="text" name="agama" value={formData.agama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
-
               <label><strong>Alamat Jalan:</strong></label>
-              <input type="text" name="alamat_jalan" value={formData.alamat_jalan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <textarea type="text" name="alamat_jalan" value={formData.alamat_jalan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>RT:</strong></label>
               <input type="text" name="rt" value={formData.rt} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
@@ -144,14 +141,18 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
 
             {/* Informasi Tambahan Guru */}
             <div>
+
+            <label><strong>Status Kepegawaian:</strong></label>
+              <input type="text" name="status_kepegawaian" value={formData.status_kepegawaian} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+
               <label><strong>Kode Pos:</strong></label>
-              <input type="text" name="kode_pos" value={formData.kode_pos} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <input type="number" name="kode_pos" value={formData.kode_pos} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Telepon:</strong></label>
-              <input type="text" name="telepon" value={formData.telepon} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <input type="number" name="telepon" value={formData.telepon} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>HP:</strong></label>
-              <input type="text" name="hp" value={formData.hp} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <input type="number" name="hp" value={formData.hp} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Email:</strong></label>
               <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
@@ -193,7 +194,7 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
             </div>
           </div>
 
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-end mt-8">
             <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
               Simpan
             </button>

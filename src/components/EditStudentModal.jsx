@@ -87,53 +87,46 @@ const EditStudentModal = ({ isOpen, onClose, fetchData, studentData }) => {
     }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const token = Cookies.get('token');
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const studentFormData = new FormData();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-  // Append all form data except files
-  Object.keys(formData).forEach((key) => {
-    if (key !== 'pas_foto' && key !== 'scan_ijazah_smp' && key !== 'scan_akte_kelahiran' && key !== 'scan_kartu_keluarga') {
-      studentFormData.append(key, formData[key]);
+    const token = Cookies.get('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+  
+    const studentFormData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === 'pas_foto' || key === 'scan_ijazah_smp' || key === 'scan_akte_kelahiran' || key === 'scan_kartu_keluarga') {
+        if (formData[key]) {
+          studentFormData.append(key, formData[key]);
+        }
+      } else {
+        studentFormData.append(key, formData[key] || '');
+      }
+    });
+  
+    try {
+      const response = await axios.put(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
+      console.log('Response:', response.data);
+      if (response.data.success) {
+        fetchData();
+        onClose();
+      } else {
+        console.error('Update failed:', response.data.message);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+      } else {
+        console.error('Error editing student:', error.message);
+      }
     }
-  });
-
-  // Conditionally append file fields if they are present
-  if (formData.pas_foto) {
-    studentFormData.append('pas_foto', formData.pas_foto);
-  }
-  if (formData.scan_ijazah_smp) {
-    studentFormData.append('scan_ijazah_smp', formData.scan_ijazah_smp);
-  }
-  if (formData.scan_akte_kelahiran) {
-    studentFormData.append('scan_akte_kelahiran', formData.scan_akte_kelahiran);
-  }
-  if (formData.scan_kartu_keluarga) {
-    studentFormData.append('scan_kartu_keluarga', formData.scan_kartu_keluarga);
-  }
-
-  try {
-    const response = await axios.put(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
-    console.log('Response:', response.data);
-    fetchData();
-    onClose();
-  } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else {
-      console.error('Error editing student:', error.message);
-    }
-  }
-};
-
+  };
+  
 
   if (!isOpen) return null;
 

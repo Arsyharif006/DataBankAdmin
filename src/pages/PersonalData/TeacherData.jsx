@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination'; // Import the Pagination c
 import * as XLSX from 'xlsx';
 import ShowTeacherModal from '../../components/ShowTeacherModal';
 import AddTeacherModal from '../../components/AddTeacherModal'; 
+import EditTeacherModal from '../../components/EditTeacherModal'; 
 
 
 const TeacherData = () => {
@@ -17,10 +18,39 @@ const TeacherData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedTeacher, setSelectedTeacher] = useState(null); // State for selected teacher
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const itemsPerPage = 5;
+
+  // Move the fetchData function outside of the useEffect
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('api/admin/gurustaff', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Ensure that response.data.data is an array before setting it to state
+      if (Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      } else {
+        console.error('Unexpected data format:', response.data);
+        setData([]); // Fallback to an empty array if the data is not as expected
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]); // Handle errors by setting an empty array
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 
   const handleAddTeacher = (newTeacher) => {
@@ -28,32 +58,6 @@ const TeacherData = () => {
     setIsAddModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.get('api/admin/gurustaff', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        // Ensure that response.data.data is an array before setting it to state
-        if (Array.isArray(response.data.data)) {
-          setData(response.data.data);
-        } else {
-          console.error('Unexpected data format:', response.data);
-          setData([]); // Fallback to an empty array if the data is not as expected
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setData([]); // Handle errors by setting an empty array
-      }
-    };
-  
-    fetchData();
-  }, []);
-  
   
 
   const sortData = (key) => {
@@ -187,6 +191,11 @@ const TeacherData = () => {
     const closeModal = () => {
       setIsModalOpen(false); // Close the modal
     };
+
+    const editTeacher = (item) => {
+      setSelectedTeacher(item); // Set the selected teacher
+      setIsEditModalOpen(true); // Open the Edit Modal
+    };
   
   
     return (
@@ -229,7 +238,7 @@ const TeacherData = () => {
                     >
                       <FaEye />
                     </button>
-                      <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-700">
+                      <button onClick={() => editTeacher(item)} className="text-blue-500 hover:text-blue-700">
                         <FaEdit />
                       </button>
                       <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-700">
@@ -268,13 +277,13 @@ const TeacherData = () => {
         </div>
 
         <div className="flex justify-between mb-4">
-          <div className="relative">
+        <div className="relative">
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Cari berdasarkan nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded-md py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border rounded-full py-2 px-4 pl-10 w-64 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
@@ -333,6 +342,12 @@ const TeacherData = () => {
         onClose={() => setIsModalOpen(false)}
         item={selectedTeacher}
       />
+    <EditTeacherModal
+  isOpen={isEditModalOpen}
+  onClose={() => setIsEditModalOpen(false)}
+  fetchData={fetchData}
+  selectedTeacher={selectedTeacher} // Pass the selected Teacher's data correctly
+/>
     </>
   );
 };

@@ -235,7 +235,7 @@ const StudentData = () => {
                       </button>
                       <button
                         onClick={() => editStudent(item)} // Open the Edit Modal
-                        className="text-green-500 hover:text-green-700"
+                        className="text-blue-500 hover:text-blue-700"
                       >
                         <FaEdit />
                       </button>
