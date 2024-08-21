@@ -2,7 +2,7 @@ import React from 'react'
 import { FaTimes } from 'react-icons/fa';
 
 
-const ShowTeacherModal = ({ isOpen, onClose, employees }) => {
+const ShowTeacherModal = ({ isOpen, onClose, item }) => {
     if (!isOpen) return null;
 
 
@@ -26,36 +26,36 @@ const ShowTeacherModal = ({ isOpen, onClose, employees }) => {
                 {/* Teacher Information */}
                 <div className="grid grid-cols-2 gap-4 mt-4 text-gray-700">
                     <div>
-                        <p><strong>Nama Lengkap:</strong> {employees.nama}</p>
-                        <p><strong>NUPTK:</strong> {employees.nuptk}</p>
-                        <p><strong>Jenis Kelamin:</strong> {employees.gender.nama}</p>
-                        <p><strong>Tempat Lahir:</strong> {employees.tempat_lahir}</p>
-                        <p><strong>Tanggal Lahir:</strong> {employees.tanggal_lahir}</p>
-                        <p><strong>NIP:</strong> {employees.nip}</p>
-                        <p><strong>Status Kepegawaian:</strong> {employees.status_kepegawaian}</p>
-                        <p><strong>Jenis PTK:</strong> {employees.jenis_ptk}</p>
-                        <p><strong>Agama:</strong> {employees.agama}</p>
-                        <p><strong>Alamat Jalan:</strong> {employees.alamat_jalan}</p>
-                        <p><strong>RT:</strong> {employees.rt}</p>
-                        <p><strong>RW:</strong> {employees.rw}</p>
-                        <p><strong>Nama Dusun:</strong> {employees.nama_dusun}</p>
-                        <p><strong>Desa/Kelurahan:</strong> {employees.desa_kelurahan}</p>
+                        <p><strong>Nama Lengkap:</strong> {item.nama}</p>
+                        <p><strong>NUPTK:</strong> {item.nuptk}</p>
+                        <p><strong>Jenis Kelamin:</strong> {item.gender.nama}</p>
+                        <p><strong>Tempat Lahir:</strong> {item.tempat_lahir}</p>
+                        <p><strong>Tanggal Lahir:</strong> {item.tanggal_lahir}</p>
+                        <p><strong>NIP:</strong> {item.nip}</p>
+                        <p><strong>Status Kepegawaian:</strong> {item.status_kepegawaian}</p>
+                        <p><strong>Jenis PTK:</strong> {item.jenis_ptk}</p>
+                        <p><strong>Agama:</strong> {item.agama}</p>
+                        <p><strong>Alamat Jalan:</strong> {item.alamat_jalan}</p>
+                        <p><strong>RT:</strong> {item.rt}</p>
+                        <p><strong>RW:</strong> {item.rw}</p>
+                        <p><strong>Nama Dusun:</strong> {item.nama_dusun}</p>
+                        <p><strong>Desa/Kelurahan:</strong> {item.desa_kelurahan}</p>
                       </div>
                       <div>
-                        <p><strong>Kecamatan:</strong> {employees.kecamatan}</p>
-                        <p><strong>Kode POS:</strong> {employees.rw}</p>
-                        <p><strong>Telepon:</strong> {employees.telepon}</p>
-                        <p><strong>No HP:</strong> {employees.hp}</p>
-                        <p><strong>Email:</strong> {employees.email}</p>
-                        <p><strong>Tugas Tambahan:</strong> {employees.tugas_tambahan}</p>
-                        <p><strong>SK CPNS:</strong> {employees.sk_cpns}</p>
-                        <p><strong>Tanggal CPNS:</strong> {employees.tanggal_cpns}</p>
-                        <p><strong>SK Pengangkatan:</strong> {employees.sk_pengangkatan}</p>
-                        <p><strong>TMT Pengangkatan:</strong> {employees.tmt_pengangkatan}</p>
-                        <p><strong>Lembaga Pengangkatan:</strong> {employees.lembaga_pengangkatan}</p>
-                        <p><strong>Pangkat Golongan:</strong> {employees.pangkat_golongan}</p>
-                        <p><strong>Pendidikan:</strong> {employees.pendidikan}</p>
-                        <p><strong>Gaji:</strong> {employees.gaji}</p>
+                        <p><strong>Kecamatan:</strong> {item.kecamatan}</p>
+                        <p><strong>Kode POS:</strong> {item.rw}</p>
+                        <p><strong>Telepon:</strong> {item.telepon}</p>
+                        <p><strong>No HP:</strong> {item.hp}</p>
+                        <p><strong>Email:</strong> {item.email}</p>
+                        <p><strong>Tugas Tambahan:</strong> {item.tugas_tambahan}</p>
+                        <p><strong>SK CPNS:</strong> {item.sk_cpns}</p>
+                        <p><strong>Tanggal CPNS:</strong> {item.tanggal_cpns}</p>
+                        <p><strong>SK Pengangkatan:</strong> {item.sk_pengangkatan}</p>
+                        <p><strong>TMT Pengangkatan:</strong> {item.tmt_pengangkatan}</p>
+                        <p><strong>Lembaga Pengangkatan:</strong> {item.lembaga_pengangkatan}</p>
+                        <p><strong>Pangkat Golongan:</strong> {item.pangkat_golongan}</p>
+                        <p><strong>Pendidikan:</strong> {item.pendidikan}</p>
+                        <p><strong>Gaji:</strong> {item.gaji}</p>
                     </div>
                 </div>
             </div>

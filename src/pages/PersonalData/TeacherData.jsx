@@ -6,6 +6,9 @@ import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import Sidebar from '../../components/Sidebar';
 import Pagination from '../../components/Pagination'; // Import the Pagination component
 import * as XLSX from 'xlsx';
+import ShowTeacherModal from '../../components/ShowTeacherModal';
+import AddTeacherModal from '../../components/AddTeacherModal'; 
+
 
 const TeacherData = () => {
   const [data, setData] = useState([]);
@@ -14,7 +17,16 @@ const TeacherData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [selectedTeacher, setSelectedTeacher] = useState(null); // State for selected teacher
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const itemsPerPage = 5;
+
+
+  const handleAddTeacher = (newTeacher) => {
+    setData([...data, newTeacher]);
+    setIsAddModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,6 +177,17 @@ const TeacherData = () => {
     const pageCount = Math.ceil(filteredData.length / itemsPerPage);
     const offset = currentPage * itemsPerPage;
     const currentPageData = filteredData.slice(offset, offset + itemsPerPage);
+
+
+    const openModal = (item) => {
+      setSelectedTeacher(item); // Set the selected teacher
+      setIsModalOpen(true); // Open the modal
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false); // Close the modal
+    };
+  
   
     return (
       <>
@@ -200,9 +223,12 @@ const TeacherData = () => {
                   <td className="py-3 px-4 border-b">{item.jenis_ptk}</td>
                   <td className="px-5 py-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
-                      <button onClick={() => alert('View clicked')} className="text-blue-700 hover:text-blue-900">
-                        <FaEye />
-                      </button>
+                    <button
+                      onClick={() => openModal(item)}
+                      className="text-blue-700 hover:text-blue-900"
+                    >
+                      <FaEye />
+                    </button>
                       <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-700">
                         <FaEdit />
                       </button>
@@ -270,7 +296,7 @@ const TeacherData = () => {
 
             </label>
             <button
-              onClick={() => alert('Add Data clicked')}
+              onClick={() => setIsAddModalOpen(true)}
               className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
             >
               Tambah Data
@@ -297,6 +323,16 @@ const TeacherData = () => {
           <TabPanel>{renderTable('Staff')}</TabPanel>
         </Tabs>
       </div>
+      <AddTeacherModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddTeacher}
+      />
+     <ShowTeacherModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={selectedTeacher}
+      />
     </>
   );
 };
