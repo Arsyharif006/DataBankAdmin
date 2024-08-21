@@ -5,8 +5,9 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import * as XLSX from 'xlsx';
-import StudentDetailsModal from '../../components/ShowStudentsModal'; // Assume this is the modal component
+import StudentDetailsModal from '../../components/ShowStudentsModal';
 import AddStudentModal from '../../components/AddStudentModal'; 
+import EditStudentModal from '../../components/EditStudentModal'; // Import the Edit Modal component
 
 const StudentData = () => {
   const [data, setData] = useState([]);
@@ -16,35 +17,35 @@ const StudentData = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // State for Add Modal
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for Edit Modal
   const itemsPerPage = 5;
 
 
-  // Function to handle adding a new student
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
   const handleAddStudent = (newStudent) => {
-    // Add the new student to the data array
     setData([...data, newStudent]);
     setIsAddModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.get('/api/admin/siswa', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        });
-        console.log(response.data.data)
-        setData(Array.isArray(response.data.data) ? response.data.data : []);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
-    fetchData();
-  }, []);
+ const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/siswa', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+    }
+  };
+
 
   const sortData = (key) => {
     let sortedData = [...data];
@@ -106,10 +107,6 @@ const StudentData = () => {
     }
   };
 
-  const editAccount = (id) => {
-    alert(`Editing account with id: ${id}`);
-  };
-
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
@@ -153,6 +150,11 @@ const StudentData = () => {
     setIsModalOpen(true);
   };
 
+  const editStudent = (student) => {
+    setSelectedStudent(student);
+    setIsEditModalOpen(true); // Open the Edit Modal
+  };
+
   return (
     <>
       <Sidebar />
@@ -184,9 +186,9 @@ const StudentData = () => {
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
             <button
-            onClick={() => setIsAddModalOpen(true)} // Open the Add Modal
-            className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
-          >
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
+            >
               Tambah Data
             </button>
           </div>
@@ -223,29 +225,38 @@ const StudentData = () => {
                   <td className="py-3 px-4 border-b">{item.no_hp}</td>
                   <td className="py-3 px-4 border-b">{item.classroom.nama}</td>
                   <td className="py-3 px-4 border-b">{item.angkatan}</td>
-                  <td className="py-3 px-4 border-b text-center justify-center space-x-2">
-                    <button onClick={() => viewStudentDetails(item)} className="text-blue-700 hover:text-blue-900">
-                      <FaEye />
-                    </button>
-                    <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-700">
+                  <td className="py-2 px-4 text-center border-b">
+                    <div className="space-x-3">
+                      <button
+                        onClick={() => viewStudentDetails(item)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FaEye />
+                      </button>
+                      <button
+                        onClick={() => editStudent(item)} // Open the Edit Modal
+                        className="text-green-500 hover:text-green-700"
+                      >
                         <FaEdit />
                       </button>
-                      <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-700">
+                      <button
+                        onClick={() => deleteItem(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
                         <FaTrash />
                       </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center mt-4">
-          <Pagination
-            pageCount={pageCount}
-            onPageChange={handlePageChange}
-          />
+          <div className="flex mt-5 justify-between">
+          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
           <button
             onClick={deleteSelected}
+            disabled={selectedIds.length === 0}
             className={`bg-red-500 text-white px-3 h-11 rounded ${
               selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
             }`}
@@ -254,20 +265,35 @@ const StudentData = () => {
           </button>
         </div>
       </div>
-      {isModalOpen && selectedStudent && (
-        <StudentDetailsModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          student={selectedStudent}
+
+      <StudentDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        student={selectedStudent}
+      />
+
+      <AddStudentModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddStudent}
+      />
+
+<EditStudentModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          fetchData={fetchData}
+          studentData={selectedStudent} // Pass the selected student's data
+          onSubmit={(updatedStudent) => {
+            const updatedData = data.map((item) =>
+              item.id === updatedStudent.id ? updatedStudent : item
+            );
+            setData(updatedData);
+            setIsEditModalOpen(false);
+          }}
         />
-      )}
-        {isAddModalOpen && (
-        <AddStudentModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          onSubmit={handleAddStudent}
-        />
-      )}
+
+    
+
     </>
   );
 };

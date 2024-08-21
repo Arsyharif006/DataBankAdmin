@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 import axios from '../api/Index';
 import Cookies from 'js-cookie';
 
-const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
+const EditStudentModal = ({ isOpen, onClose, fetchData, studentData }) => {
   const [formData, setFormData] = useState({
     nama_lengkap: '',
     nama_panggilan: '',
@@ -62,7 +62,14 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
     };
 
     fetchDropdownData();
-  }, []);
+
+    if (studentData) {
+      setFormData({
+        ...formData,
+        ...studentData,
+      });
+    }
+  }, [studentData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,40 +87,53 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const token = Cookies.get('token');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    const studentData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      studentData.append(key, formData[key]);
-    });
-
-    // Log the data being sent
-    for (let pair of studentData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
-    try {
-      const response = await axios.post('/api/admin/siswa', studentData, config);
-      console.log('Response:', response.data);
-      fetchData();
-      onClose();
-    } catch (error) {
-      if (error.response) {
-        console.error('Error response:', error.response.data); // Logs server-side validation errors
-      } else {
-        console.error('Error adding student:', error.message);
-      }
-    }
+  const token = Cookies.get('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   };
+
+  const studentFormData = new FormData();
+  
+  // Append all form data except files
+  Object.keys(formData).forEach((key) => {
+    if (key !== 'pas_foto' && key !== 'scan_ijazah_smp' && key !== 'scan_akte_kelahiran' && key !== 'scan_kartu_keluarga') {
+      studentFormData.append(key, formData[key]);
+    }
+  });
+
+  // Conditionally append file fields if they are present
+  if (formData.pas_foto) {
+    studentFormData.append('pas_foto', formData.pas_foto);
+  }
+  if (formData.scan_ijazah_smp) {
+    studentFormData.append('scan_ijazah_smp', formData.scan_ijazah_smp);
+  }
+  if (formData.scan_akte_kelahiran) {
+    studentFormData.append('scan_akte_kelahiran', formData.scan_akte_kelahiran);
+  }
+  if (formData.scan_kartu_keluarga) {
+    studentFormData.append('scan_kartu_keluarga', formData.scan_kartu_keluarga);
+  }
+
+  try {
+    const response = await axios.put(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
+    console.log('Response:', response.data);
+    fetchData();
+    onClose();
+  } catch (error) {
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else {
+      console.error('Error editing student:', error.message);
+    }
+  }
+};
+
 
   if (!isOpen) return null;
 
@@ -127,15 +147,15 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
         </div>
         <form onSubmit={handleSubmit} className="p-6 relative">
           <div className="text-center mb-10">
-            <h3 className="text-2xl font-bold tracking-wider text-gray-800">Tambah Data Siswa</h3>
+            <h3 className="text-2xl font-bold tracking-wider text-gray-800">Edit Data Siswa</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-4 text-gray-700">
             {/* Student Information */}
             <div>
+              {/* Same form fields as AddStudentModal, but pre-filled with formData */}
               <label><strong>Nama Lengkap:</strong></label>
               <input type="text" name="nama_lengkap" value={formData.nama_lengkap} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
-
               <label><strong>Nama Panggilan:</strong></label>
               <input type="text" name="nama_panggilan" value={formData.nama_panggilan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
 
@@ -194,9 +214,9 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
 
             {/* Parent Information */}
             <div>
+              {/* Same form fields as AddStudentModal, but pre-filled with formData */}
               <label><strong>Nama Orang Tua:</strong></label>
               <input type="text" name="nama_orang_tua" value={formData.nama_orang_tua} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
-
               <label><strong>Status Orang Tua:</strong></label>
               <input type="text" name="status_orang_tua" value={formData.status_orang_tua} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
 
@@ -269,7 +289,7 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
 
           <div className="flex justify-center mt-6">
             <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
-              Tambah
+              Simpan Perubahan
             </button>
           </div>
         </form>
@@ -278,4 +298,4 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
   );
 };
 
-export default AddStudentModal;
+export default EditStudentModal;
