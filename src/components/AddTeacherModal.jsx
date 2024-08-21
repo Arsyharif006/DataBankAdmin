@@ -93,98 +93,98 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
             {/* Informasi Guru */}
             <div>
               <label><strong>Nama:</strong></label>
-              <input type="text" name="nama" value={formData.nama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="nama" value={formData.nama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>NUPTK:</strong></label>
-              <input type="text" name="nuptk" value={formData.nuptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="nuptk" value={formData.nuptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Jenis Kelamin:</strong></label>
-              <select name="gender_id" value={formData.gender_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required>
+              <select name="gender_id" value={formData.gender_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
                 <option value="">Pilih Jenis Kelamin</option>
                 <option value="1">Laki-laki</option>
                 <option value="2">Perempuan</option>
               </select>
 
               <label><strong>Tempat Lahir:</strong></label>
-              <input type="text" name="tempat_lahir" value={formData.tempat_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="tempat_lahir" value={formData.tempat_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tanggal Lahir:</strong></label>
-              <input type="date" name="tanggal_lahir" value={formData.tanggal_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="date" name="tanggal_lahir" value={formData.tanggal_lahir} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>NIP:</strong></label>
-              <input type="text" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Status Kepegawaian:</strong></label>
-              <input type="text" name="status_kepegawaian" value={formData.status_kepegawaian} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="status_kepegawaian" value={formData.status_kepegawaian} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Jenis PTK:</strong></label>
-              <input type="text" name="jenis_ptk" value={formData.jenis_ptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="jenis_ptk" value={formData.jenis_ptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Agama:</strong></label>
-              <input type="text" name="agama" value={formData.agama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="agama" value={formData.agama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Alamat Jalan:</strong></label>
-              <input type="text" name="alamat_jalan" value={formData.alamat_jalan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="alamat_jalan" value={formData.alamat_jalan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>RT:</strong></label>
-              <input type="text" name="rt" value={formData.rt} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="rt" value={formData.rt} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>RW:</strong></label>
-              <input type="text" name="rw" value={formData.rw} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="rw" value={formData.rw} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Nama Dusun:</strong></label>
-              <input type="text" name="nama_dusun" value={formData.nama_dusun} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="nama_dusun" value={formData.nama_dusun} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Desa/Kelurahan:</strong></label>
-              <input type="text" name="desa_kelurahan" value={formData.desa_kelurahan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="desa_kelurahan" value={formData.desa_kelurahan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Kecamatan:</strong></label>
-              <input type="text" name="kecamatan" value={formData.kecamatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="kecamatan" value={formData.kecamatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
             </div>
 
             {/* Informasi Tambahan Guru */}
             <div>
               <label><strong>Kode Pos:</strong></label>
-              <input type="text" name="kode_pos" value={formData.kode_pos} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="kode_pos" value={formData.kode_pos} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Telepon:</strong></label>
-              <input type="text" name="telepon" value={formData.telepon} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="telepon" value={formData.telepon} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>HP:</strong></label>
-              <input type="text" name="hp" value={formData.hp} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="hp" value={formData.hp} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Email:</strong></label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tugas Tambahan:</strong></label>
               <input type="text" name="tugas_tambahan" value={formData.tugas_tambahan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
 
               <label><strong>SK CPNS:</strong></label>
-              <input type="text" name="sk_cpns" value={formData.sk_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="sk_cpns" value={formData.sk_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tanggal CPNS:</strong></label>
-              <input type="date" name="tanggal_cpns" value={formData.tanggal_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="date" name="tanggal_cpns" value={formData.tanggal_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>SK Pengangkatan:</strong></label>
-              <input type="text" name="sk_pengangkatan" value={formData.sk_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="sk_pengangkatan" value={formData.sk_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>TMT Pengangkatan:</strong></label>
-              <input type="date" name="tmt_pengangkatan" value={formData.tmt_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="date" name="tmt_pengangkatan" value={formData.tmt_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Lembaga Pengangkatan:</strong></label>
-              <input type="text" name="lembaga_pengangkatan" value={formData.lembaga_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="lembaga_pengangkatan" value={formData.lembaga_pengangkatan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Pangkat/Golongan:</strong></label>
-              <input type="text" name="pangkat_golongan" value={formData.pangkat_golongan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="pangkat_golongan" value={formData.pangkat_golongan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Pendidikan:</strong></label>
-              <input type="text" name="pendidikan" value={formData.pendidikan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="text" name="pendidikan" value={formData.pendidikan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Gaji Pokok:</strong></label>
-              <input type="number" name="gaji" value={formData.gaji} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required />
+              <input type="number" name="gaji" value={formData.gaji} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tipe Pegawai:</strong></label>
-              <select name="employee_type_id" value={formData.employee_type_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" required>
+              <select name="employee_type_id" value={formData.employee_type_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
                 <option value="">Pilih Tipe Pegawai</option>
                 <option value="1">Guru Produktif</option>
                 <option value="2">Guru Non Produktif</option>
