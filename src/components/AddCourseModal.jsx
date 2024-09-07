@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from '../api/Index';
 import { FaTimes } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
+
 
 const AddCourseModal = ({ closeModal, fetchData }) => {
   const [courseName, setCourseName] = useState('');
@@ -23,8 +25,16 @@ const AddCourseModal = ({ closeModal, fetchData }) => {
       });
       fetchData(); // Refresh data
       closeModal();
+      toast.success("Berhasil Menambah data MataPelajaran!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error creating course:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menambah data MataPelajaran!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -63,9 +73,9 @@ const AddCourseModal = ({ closeModal, fetchData }) => {
               className="border rounded w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
-              <option value="" disabled>Tipe Mata Pelajaran</option>
-              <option value="1">Produktif</option>
-              <option value="2">Non Produktif</option>
+              <option value="" disabled>Kelompok Mata Pelajaran</option>
+              <option value="1">Umum</option>
+              <option value="2">Kejuruan</option>
             </select>
           </div>
           <button

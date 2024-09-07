@@ -8,6 +8,7 @@ import { LuUserCog } from "react-icons/lu";
 import Cookies from 'js-cookie';
 import { toast } from 'react-hot-toast';
 import Api from '../api/Index'; 
+import logo from '../images/sknic.png'
 
 const menus = [
   {
@@ -92,13 +93,13 @@ export function Sidebar() {
     <div className="min-h-screen max-w-[45vh] w-[45vh] p-2 shadow-xl flex-grow bg-gray-800">
       <div className="mb-4 flex items-center gap-2 p-4">
         <img
-          src="https://media.licdn.com/dms/image/C510BAQH8vzaLQwV33w/company-logo_200_200/0/1630622969900?e=2147483647&v=beta&t=jVEs1Z2BR7ZXPGvc52TVxrD3IZ96NH_aMnrkZz39Zec"
+          src={logo}
           alt="brand"
-          className="h-10 w-10"
+          className="h-12 w-11"
         />
         <div className="text-md ml-2 font-medium text-gray-200">
           <p>Data Bank</p>
-          <p>Smkn 1 Ciomas</p>
+          <p>SMKN 1 Ciomas</p>
         </div>
       </div>
       <ul className="flex flex-col text-gray-200 space-y-2">

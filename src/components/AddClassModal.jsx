@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../api/Index';
 import { FaTimes } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
 
 const AddClassModal = ({ closeModal, fetchData }) => {
   const [formData, setFormData] = useState({ name: '', tingkat: '', department: '' });
@@ -19,8 +20,16 @@ const AddClassModal = ({ closeModal, fetchData }) => {
           },
         });
         setDepartments(response.data.data); // Adjust based on actual response format
+        toast.success("Berhasil Menambah data Kelas!", {
+          position: "top-center",
+          duration: 5000,
+        });
       } catch (error) {
-        console.error('Error fetching departments:', error);
+        console.error('Error deleting data:', error);
+        toast.error("Gagal Menambah data Kelas!", {
+          position: "top-center",
+          duration: 5000,
+        });
       }
     };
 

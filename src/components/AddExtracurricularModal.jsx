@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from '../api/Index';
 import { FaTimes } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
+
 
 const AddExtracurricularModal = ({ closeModal, fetchData }) => {
   const [name, setName] = useState('');
@@ -19,8 +21,16 @@ const AddExtracurricularModal = ({ closeModal, fetchData }) => {
       });
       fetchData(); // Refresh data
       closeModal();
+      toast.success("Berhasil Menambah data Ekstrakulikuler!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menambah data Ekstrakulikuler!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }

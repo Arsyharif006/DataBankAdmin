@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from '../api/Index';
 import { FaTimes } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
+
 
 const AddDepartmenModal = ({ closeModal, fetchData }) => {
   const [name, setName] = useState('');
@@ -19,8 +21,16 @@ const AddDepartmenModal = ({ closeModal, fetchData }) => {
       });
       fetchData(); // Refresh data
       closeModal();
+      toast.success("Berhasil Menambah data Jurusan!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menambah data Jurusan!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -30,7 +40,7 @@ const AddDepartmenModal = ({ closeModal, fetchData }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
       <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-semibold">Tambah Data Jurusan</h2>
+          <h2 className="text-xl font-semibold">Tambah Konsentrasi Keahlian</h2>
           <button
             onClick={closeModal}
             className="text-gray-500 hover:text-gray-700"
@@ -40,7 +50,7 @@ const AddDepartmenModal = ({ closeModal, fetchData }) => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">Nama Jurusan</label>
+            <label htmlFor="name" className="block text-gray-700 mb-2">Nama Konsentrasi Keahlian</label>
             <input
               id="name"
               type="text"

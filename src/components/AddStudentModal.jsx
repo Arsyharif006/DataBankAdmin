@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import axios from '../api/Index';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
+
 
 const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
   const [formData, setFormData] = useState({
@@ -106,14 +108,19 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
       console.log('Response:', response.data);
       fetchData();
       onClose();
+      toast.success("Berhasil Menambah data siswa!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      if (error.response) {
-        console.error('Error response:', error.response.data); // Logs server-side validation errors
-      } else {
-        console.error('Error adding student:', error.message);
-      }
+      toast.error("Gagal Menambah data siswa!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
+
+ 
 
   if (!isOpen) return null;
 
@@ -224,9 +231,9 @@ const AddStudentModal = ({ isOpen, onClose, fetchData }) => {
               <label><strong>No. HP Orang Tua:</strong></label>
               <input type="number" name="no_hp_orang_tua" value={formData.no_hp_orang_tua} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
 
-              <label><strong>Departemen:</strong></label>
+              <label><strong>Konsentrasi Keahlian:</strong></label>
               <select name="department_id" value={formData.department_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md">
-                <option value="">Pilih Departemen</option>
+                <option value="">Pilih Konsentrasi Keahlian</option>
                 {departments.map((dept) => (
                   <option key={dept.id} value={dept.id}>{dept.nama}</option>
                 ))}

@@ -12,7 +12,8 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
     tanggal_lahir: '',
     nip: '',
     status_kepegawaian: '',
-    jenis_ptk: '',
+    employee_type3_id: '',
+    employee_type2_id: '',
     agama: '',
     alamat_jalan: '',
     rt: '',
@@ -25,7 +26,7 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
     hp: '',
     email: '',
     tugas_tambahan: '',
-    sk_cpns: '',
+    sk: '',
     tanggal_cpns: '',
     sk_pengangkatan: '',
     tmt_pengangkatan: '',
@@ -102,7 +103,12 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
               <input type="number" name="nuptk" value={formData.nuptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Jenis PTK:</strong></label>
-              <input type="text" name="jenis_ptk" value={formData.jenis_ptk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <select name="employee_type3_id" value={formData.employee_type3_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
+                <option value="">Pilih Jenis PTK</option>
+                <option value="1">PNS</option>
+                <option value="2">P3K</option>
+                <option value="3">Honorer</option>
+              </select>
 
               <label><strong>Jenis Kelamin:</strong></label>
               <select name="gender_id" value={formData.gender_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
@@ -160,8 +166,8 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
               <label><strong>Tugas Tambahan:</strong></label>
               <input type="text" name="tugas_tambahan" value={formData.tugas_tambahan} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" />
 
-              <label><strong>SK CPNS:</strong></label>
-              <input type="text" name="sk_cpns" value={formData.sk_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              <label><strong>SK:</strong></label>
+              <input type="text" name="sk" value={formData.sk} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
               <label><strong>Tanggal CPNS:</strong></label>
               <input type="date" name="tanggal_cpns" value={formData.tanggal_cpns} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
@@ -184,12 +190,23 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
               <label><strong>Gaji Pokok:</strong></label>
               <input type="number" name="gaji" value={formData.gaji} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
-              <label><strong>Tipe Pegawai:</strong></label>
+              <label><strong>Jenis Pegawai:</strong></label>
               <select name="employee_type_id" value={formData.employee_type_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
-                <option value="">Pilih Tipe Pegawai</option>
+                <option value="">Pilih Jenis Pegawai</option>
                 <option value="1">Guru Produktif</option>
                 <option value="2">Guru Non Produktif</option>
                 <option value="3">Staff</option>
+              </select>
+              <label><strong>Jabatan:</strong></label>
+              <select name="employee_type2_id" value={formData.employee_type2_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
+                <option value="">Pilih Jabatan</option>
+                <option value="1">Guru Umum</option>
+                <option value="2">Guru Kejuruan</option>
+                <option value="3">TU</option>
+                <option value="4">Toolman</option>
+                <option value="5">Satpam</option>
+                <option value="6">Perpus</option>
+                <option value="7">OB</option>
               </select>
             </div>
           </div>

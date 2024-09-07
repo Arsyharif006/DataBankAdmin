@@ -49,7 +49,7 @@ const ShowStudentsModal = ({ isOpen, onClose, student }) => {
                     <p><strong>Tinggal Dengan:</strong> {student.tinggal_dengan}</p>
                     <p><strong>Anak Ke:</strong> {student.anak_ke}</p>
                     <p><strong>Jumlah Saudara:</strong> {student.jumlah_saudara}</p>
-                    <p><strong>Departemen:</strong> {student.department.nama}</p>
+                    <p><strong>Konsentrasi Keahlian:</strong> {student.department.nama}</p>
                     <p><strong>Kelas:</strong> {student.classroom.nama}</p>
                     <p><strong>Angkatan:</strong> {student.angkatan}</p>
                     <p><strong>Transportasi ke Sekolah:</strong> {student.ke_sekolah_menggunakan}</p>
@@ -69,21 +69,22 @@ const ShowStudentsModal = ({ isOpen, onClose, student }) => {
                 </div>
             </div>
 
-            {/* Student Documents */}
-            <div className="mt-16">
-                <h4 className="text-lg font-semibold text-gray-800">Dokumen Pendukung</h4>
-                <div className="flex justify-between mt-4">
-                    <div className="w-24 h-32 border-2 border-gray-400 rounded-lg overflow-hidden shadow-md">
-                        <img src={student.scan_ijazah_smp} alt="scan ijazah smp" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="w-24 h-32 border-2 border-gray-400 rounded-lg overflow-hidden shadow-md">
-                        <img src={student.scan_akte_kelahiran} alt="scan akte kelahiran" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="w-24 h-32 border-2 border-gray-400 rounded-lg overflow-hidden shadow-md">
-                        <img src={student.scan_kartu_keluarga} alt="scan kartu Keluarga" className="w-full h-full object-cover" />
-                    </div>
-                </div>
-            </div>
+{/* Student Documents */}
+<div className="mt-16">
+    <h4 className="text-lg font-semibold text-gray-800">Dokumen Pendukung</h4>
+    <div className="flex flex-col space-y-2 mt-4">
+        <a href={student.scan_ijazah_smp} rel="noopener noreferrer" className="text-blue-500 hover:underline cursor-pointer">
+            Lihat Scan Ijazah SMP
+        </a>
+        <a href={student.scan_akte_kelahiran} rel="noopener noreferrer" className="text-blue-500 hover:underline cursor-pointer">
+            Lihat Scan Akte Kelahiran
+        </a>
+        <a href={student.scan_kartu_keluarga} rel="noopener noreferrer" className="text-blue-500 hover:underline cursor-pointer">
+            Lihat Scan Kartu Keluarga
+        </a>
+    </div>
+</div>
+
         </div>
   
       </div>

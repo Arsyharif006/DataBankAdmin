@@ -5,6 +5,8 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import AddRoomModal from '../../components/AddRoomModal';
+import { toast } from 'react-hot-toast';
+
 
 const RoomData = () => {
   const [data, setData] = useState([]);
@@ -88,8 +90,16 @@ const RoomData = () => {
       // Filter out deleted rooms from the data
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
+      toast.success("Berhasil Menghapus data yang dipilih!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error deleting selected rooms:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
   
@@ -103,8 +113,16 @@ const RoomData = () => {
         },
       });
       setData(data.filter((item) => item.id !== id));
+      toast.success("Berhasil Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error deleting room:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -125,6 +143,66 @@ const RoomData = () => {
   const offset = currentPage * itemsPerPage;
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredData.length / itemsPerPage);
+
+  const importData = async (event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = Cookies.get('token');
+      await axios.post('api/admin/rooms/import', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      toast.success("Berhasil Import data Ruangan!", {
+        position: "top-center",
+        duration: 5000,
+      });
+
+    } catch (error) {
+      console.error('Error importing data:', error);
+      toast.error("Gagal Mengimpor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    }
+  };
+
+  const exportData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/rooms/export', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob', // Ensure response is treated as a file
+      });
+  
+      // Create a link element to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Ruangan.xlsx'); // Name of the file to be downloaded
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Remove the link after download
+      toast.success("Berhasil Export Data Ruangan!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error("Gagal Mengekspor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    }
+  };
+  
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -148,12 +226,24 @@ const RoomData = () => {
             />
             <FaSearch className="absolute inset-y-0 left-3 my-auto text-gray-400" />
           </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportData}
+              className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200"
+            >
+              Export
+            </button>
+            <label className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200 flex items-center cursor-pointer">
+              Import
+              <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
+            </label>
           <button
             onClick={openModal}
             className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
           >
             Tambah Data
           </button>
+        </div>
         </div>
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
           <table className="min-w-full bg-white">

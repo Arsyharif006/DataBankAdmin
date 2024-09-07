@@ -4,10 +4,11 @@ import Cookies from 'js-cookie';
 import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare, FaSearch, FaEye } from 'react-icons/fa';
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
-import * as XLSX from 'xlsx';
 import StudentDetailsModal from '../../components/ShowStudentsModal';
 import AddStudentModal from '../../components/AddStudentModal'; 
 import EditStudentModal from '../../components/EditStudentModal'; // Import the Edit Modal component
+import { toast } from 'react-hot-toast';
+
 
 const StudentData = () => {
   const [data, setData] = useState([]);
@@ -88,8 +89,16 @@ const StudentData = () => {
       }
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
+      toast.success("Berhasil Menghapus data yang dipilih!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
       console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -102,8 +111,16 @@ const StudentData = () => {
         },
       });
       setData(data.filter((item) => item.id !== id));
+      toast.success("Berhasil Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
       console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -124,17 +141,49 @@ const StudentData = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      toast.success("Berhasil Import Data Siswa!", {
+        position: "top-center",
+        duration: 5000,
+      });
 
     } catch (error) {
       console.error('Error importing data:', error);
+      toast.error("Gagal Mengimpor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
-  const exportData = () => {
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Students');
-    XLSX.writeFile(wb, 'students.xlsx');
+  const exportData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/students/export', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob', // Ensure response is treated as a file
+      });
+  
+      // Create a link element to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Siswa.xlsx'); // Name of the file to be downloaded
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Remove the link after download
+      toast.success("Berhasil Export Data Siswa!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error("Gagal Mengekspor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    }
   };
 
   const filteredData = data.filter(item =>

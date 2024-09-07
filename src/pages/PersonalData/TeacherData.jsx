@@ -159,12 +159,27 @@ const TeacherData = () => {
     }
   };
 
-  // Export data to Excel
-  const exportData = () => {
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Teachers');
-    XLSX.writeFile(wb, 'Teachers.xlsx');
+  const exportData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/employees/export', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob', // Ensure response is treated as a file
+      });
+  
+      // Create a link element to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Guru_Dan_Staff.xlsx'); // Name of the file to be downloaded
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Remove the link after download
+    } catch (error) {
+      console.error('Error exporting data:', error);
+    }
   };
 
   const renderTable = (categories) => {
@@ -212,7 +227,7 @@ const TeacherData = () => {
                 <th className="py-3 px-4 text-left font-medium">NIP</th>
                 <th className="py-3 px-4 text-left font-medium">Email</th>
                 <th className="py-3 px-4 text-left font-medium">No. HP</th>
-                <th className="py-3 px-4 text-left font-medium">Sebagai</th>
+                <th className="py-3 px-4 text-left font-medium">Jabatan</th>
                 <th className="py-3 px-4 text-center font-medium">Aksi</th>
               </tr>
             </thead>
@@ -229,7 +244,7 @@ const TeacherData = () => {
                   <td className="py-3 px-4 border-b">{item.nip}</td>
                   <td className="py-3 px-4 border-b">{item.email}</td>
                   <td className="py-3 px-4 border-b">{item.hp}</td>
-                  <td className="py-3 px-4 border-b">{item.jenis_ptk}</td>
+                  <td className="py-3 px-4 border-b">{item.employee_type2.nama}</td>
                   <td className="px-5 py-4 border-b text-center">
                     <div className="flex justify-center space-x-2">
                     <button
