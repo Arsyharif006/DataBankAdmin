@@ -322,7 +322,7 @@ const TeacherData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-Start items-Start mb-12">
           <h1 className="text-2xl font-semibold text-gray-800">Data Guru Dan Staff</h1>
-          <p className="text-gray-500">/ dataguru-admin</p>
+          <p className="text-gray-500">/ teacherdata-admin</p>
         </div>
 
         <div className="flex justify-between mb-4">

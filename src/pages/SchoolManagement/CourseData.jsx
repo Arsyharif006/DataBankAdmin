@@ -5,6 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import AddCourseModal from '../../components/AddCourseModal';
+import EditCourseModal from '../../components/EditCourseModal';
 import { toast } from 'react-hot-toast';
 
 const CourseData = () => {
@@ -14,36 +15,39 @@ const CourseData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const itemsPerPage = 5;
 
+  // Function to fetch data from API
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/mapel', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast.error("Gagal memuat data!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    }
+  };
+
+  // Fetch data when component mounts or when modal is closed
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.get('/api/admin/mapel', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        // Logging the response data for debugging
-  
-        const rooms = response.data.data;
-        if (Array.isArray(rooms)) {
-          setData(rooms);
-        } else {
-          console.error('Unexpected data format:', rooms);
-          setData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
     fetchData();
-  }, []);
-  
+  }, [isModalOpen, isEditModalOpen]);
+
+  const editAccount = (course) => {
+    setSelectedCourse(course);
+    setIsEditModalOpen(true);
+  };
 
   const sortData = (key) => {
     let sortedData = [...data];
@@ -77,8 +81,6 @@ const CourseData = () => {
   const deleteSelected = async () => {
     try {
       const token = Cookies.get('token');
-      
-      // Create an array of delete requests
       const deleteRequests = selectedIds.map(id =>
         axios.delete(`/api/admin/mapel/${id}`, {
           headers: {
@@ -86,11 +88,7 @@ const CourseData = () => {
           },
         })
       );
-  
-      // Execute all delete requests concurrently
       await Promise.all(deleteRequests);
-  
-      // Filter out deleted rooms from the data
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
       toast.success("Berhasil Menghapus data yang dipilih!", {
@@ -105,7 +103,6 @@ const CourseData = () => {
       });
     }
   };
-  
 
   const deleteAccount = async (id) => {
     try {
@@ -129,18 +126,14 @@ const CourseData = () => {
     }
   };
 
-  const editAccount = (id) => {
-    alert(`Editing room with id: ${id}`);
-  };
-
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
   const filteredData = Array.isArray(data)
     ? data.filter(item =>
-        item.nama && item.nama.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      item.nama && item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : [];
 
   const offset = currentPage * itemsPerPage;
@@ -154,7 +147,7 @@ const CourseData = () => {
 
     try {
       const token = Cookies.get('token');
-      await axios.post('api/admin/subjects/import', formData, {
+      await axios.post('/api/admin/subjects/import', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -164,7 +157,7 @@ const CourseData = () => {
         position: "top-center",
         duration: 5000,
       });
-
+      fetchData(); // Refresh data after import
     } catch (error) {
       console.error('Error importing data:', error);
       toast.error("Gagal Mengimpor data!", {
@@ -181,17 +174,16 @@ const CourseData = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'blob', // Ensure response is treated as a file
+        responseType: 'blob',
       });
-  
-      // Create a link element to download the file
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'MataPelajaran.xlsx'); // Name of the file to be downloaded
+      link.setAttribute('download', 'MataPelajaran.xlsx');
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link); // Remove the link after download
+      document.body.removeChild(link);
       toast.success("Berhasil Export Data MataPelajaran!", {
         position: "top-center",
         duration: 5000,
@@ -204,10 +196,10 @@ const CourseData = () => {
       });
     }
   };
-  
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
 
   return (
     <>
@@ -239,13 +231,13 @@ const CourseData = () => {
               Import
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
-          <button
-            onClick={openModal}
-            className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
-          >
-            Tambah Data
-          </button>
-        </div>
+            <button
+              onClick={openModal}
+              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+            >
+              Tambah Data
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
           <table className="min-w-full bg-white">
@@ -261,31 +253,35 @@ const CourseData = () => {
               </tr>
             </thead>
             <tbody>
-  {currentData.map((item, index) => (
-    <tr key={item.id} className="hover:bg-gray-50">
-      <td className="py-3 px-4 text-center border-b">
-        <button onClick={() => toggleSelect(item.id)}>
-          {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
-        </button>
-      </td>
-      <td className="py-3 px-4 border-b text-start">{offset + index + 1}</td>
-      <td className="py-3 px-4 border-b">{item.nama}</td>
-      
-      <td className="py-3 px-4 border-b">
-        {item.subject_type.nama}
-      </td>
+              {currentData.map((item, index) => (
+                <tr key={item.id} className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-center border-b">
+                    <button onClick={() => toggleSelect(item.id)}>
+                      {selectedIds.includes(item.id) ? <FaCheckSquare className="text-blue-500" /> : <FaSquare />}
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 border-b text-start">{offset + index + 1}</td>
+                  <td className="py-3 px-4 border-b">{item.nama}</td>
 
-      <td className="py-3 px-4 border-b text-center space-x-4">
-        <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
-          <FaEdit />
-        </button>
-        <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
-          <FaTrash />
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+                  <td className="py-3 px-4 border-b">
+                    {item.subject_type.nama}
+                  </td>
+
+                  <td className="py-3 px-4 border-b text-center space-x-4">
+                    <button
+                      onClick={() => editAccount(item)} // Pass the full course data
+                      className="text-blue-500 hover:text-blue-600"
+                    >
+                      <FaEdit />
+                    </button>
+
+                    <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
 
           </table>
         </div>
@@ -302,6 +298,14 @@ const CourseData = () => {
         {isModalOpen && (
           <AddCourseModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
         )}
+        {isEditModalOpen && (
+          <EditCourseModal
+            closeModal={() => setIsEditModalOpen(false)}
+            fetchData={fetchData}  // Pass fetchData to EditCourseModal
+            courseData={selectedCourse}
+          />
+        )}
+
       </div>
     </>
   );

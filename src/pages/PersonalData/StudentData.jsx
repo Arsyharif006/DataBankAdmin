@@ -210,7 +210,7 @@ const StudentData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Data Siswa</h1>
-          <p className='text-gray-500'>/ datasiswa-admin</p>
+          <p className='text-gray-500'>/ studentdata-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
