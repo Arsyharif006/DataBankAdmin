@@ -5,10 +5,11 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import Sidebar from '../../components/Sidebar';
 import Pagination from '../../components/Pagination'; // Import the Pagination component
-import * as XLSX from 'xlsx';
 import ShowTeacherModal from '../../components/ShowTeacherModal';
 import AddTeacherModal from '../../components/AddTeacherModal'; 
 import EditTeacherModal from '../../components/EditTeacherModal'; 
+import { toast } from 'react-hot-toast';
+
 
 
 const TeacherData = () => {
@@ -110,8 +111,16 @@ const TeacherData = () => {
       // Remove deleted items from the state
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]); // Clear selection after deletion
+      toast.success("Berhasil Menghapus data yang dipilih!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error deleting selected accounts:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
   
@@ -125,8 +134,16 @@ const TeacherData = () => {
         },
       });
       setData(data.filter((item) => item.id !== id));
+      toast.success("Berhasil Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error('Error deleting account:', error);
+      console.error('Error deleting data:', error);
+      toast.error("Gagal Menghapus data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -154,8 +171,17 @@ const TeacherData = () => {
         },
       });
 
+      toast.success("Berhasil Import data Guru dan staff!", {
+        position: "top-center",
+        duration: 5000,
+      });
+
     } catch (error) {
       console.error('Error importing data:', error);
+      toast.error("Gagal Mengimpor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -177,8 +203,16 @@ const TeacherData = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link); // Remove the link after download
+      toast.success("Berhasil Export Data Guru dan staff!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
       console.error('Error exporting data:', error);
+      toast.error("Gagal Mengekspor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 

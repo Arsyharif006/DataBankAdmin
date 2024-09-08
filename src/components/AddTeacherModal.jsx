@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import axios from '../api/Index';
 import Cookies from 'js-cookie';
+import { toast } from 'react-hot-toast';
+
 
 const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
   const [formData, setFormData] = useState({
@@ -66,12 +68,15 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
       console.log('Response:', response.data);
       fetchData();
       onClose();
+      toast.success("Berhasil Menambah data Guru dan staff!", {
+        position: "top-center",
+        duration: 5000,
+      });
     } catch (error) {
-      if (error.response) {
-        console.error('Error response:', error.response.data);
-      } else {
-        console.error('Error adding teacher:', error.message);
-      }
+      toast.error("Gagal Menambah data Guru dan staff!", {
+        position: "top-center",
+        duration: 5000,
+      });
     }
   };
 
@@ -87,7 +92,7 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
         </div>
         <form onSubmit={handleSubmit} className="p-6 relative">
           <div className="text-center mb-10">
-            <h3 className="text-2xl font-bold tracking-wider text-gray-800">Tambah Data Guru</h3>
+            <h3 className="text-2xl font-bold tracking-wider text-gray-800">Tambah Data Guru / Staff</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-4 text-gray-700">
@@ -193,9 +198,8 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
               <label><strong>Jenis Pegawai:</strong></label>
               <select name="employee_type_id" value={formData.employee_type_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >
                 <option value="">Pilih Jenis Pegawai</option>
-                <option value="1">Guru Produktif</option>
-                <option value="2">Guru Non Produktif</option>
-                <option value="3">Staff</option>
+                <option value="1">Guru</option>
+                <option value="2">Staff</option>
               </select>
               <label><strong>Jabatan:</strong></label>
               <select name="employee_type2_id" value={formData.employee_type2_id} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md" >

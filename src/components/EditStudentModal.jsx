@@ -96,6 +96,7 @@ const EditStudentModal = ({ isOpen, onClose, fetchData, studentData }) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
       },
     };
 
@@ -112,7 +113,7 @@ const EditStudentModal = ({ isOpen, onClose, fetchData, studentData }) => {
     });
   
     try {
-      const response = await axios.put(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
+      const response = await axios.post(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
       console.log('Response:', response.data);
       (response.data.success) 
         fetchData();

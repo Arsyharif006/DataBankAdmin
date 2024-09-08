@@ -20,7 +20,6 @@ import ClassDataAdmin from '../pages/SchoolManagement/ClassData.jsx';
 import AuditLogAdmin from '../pages/AuditLog.jsx';
 import RoomDataAdmin from './../pages/SchoolManagement/RoomData.jsx';
 import ExtracurricularDataAdmin from './../pages/SchoolManagement/ExtracurricularData.jsx';
-import Combo from './../pages/ContohModal.jsx';
 
 
 
@@ -56,7 +55,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/akun-admin"
+                path="/account-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -68,7 +67,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/dataguru-admin"
+                path="/teacherdata-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -80,7 +79,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/datasiswa-admin"
+                path="/studentdata-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -92,7 +91,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/matapelajaran-admin"
+                path="/subject-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -104,7 +103,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/jurusan-admin"
+                path="/department-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -116,7 +115,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/kelas-admin"
+                path="/class-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -140,7 +139,7 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/ruangan-admin"
+                path="/room-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
@@ -152,23 +151,11 @@ export default function RoutesIndex() {
             />
             {/* private route "/dashboard" */}
             <Route
-                path="/extrakulikuler-admin"
+                path="/extracurricular-admin"
                 element={
                     <Suspense fallback={<Loader />}>
                         <PrivateRoutes>
                             <ExtracurricularDataAdmin />
-                        </PrivateRoutes>
-                    </Suspense>
-
-                }
-            />
-            {/* private route "/dashboard" */}
-            <Route
-                path="/combo-admin"
-                element={
-                    <Suspense fallback={<Loader />}>
-                        <PrivateRoutes>
-                            <Combo />
                         </PrivateRoutes>
                     </Suspense>
 

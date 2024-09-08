@@ -20,7 +20,7 @@ const ShowTeacherModal = ({ isOpen, onClose, item }) => {
             <div className="p-6 relative">
                 {/* Header */}
                 <div className="text-center mb-10">
-                    <h3 className="text-2xl font-bold tracking-wider text-gray-800">Detail Data Guru</h3>
+                    <h3 className="text-2xl font-bold tracking-wider text-gray-800">Detail Data Guru / Staff</h3>
                 </div>
 
                 {/* Teacher Information */}
@@ -33,22 +33,22 @@ const ShowTeacherModal = ({ isOpen, onClose, item }) => {
                         <p><strong>Tanggal Lahir:</strong> {item.tanggal_lahir}</p>
                         <p><strong>NIP:</strong> {item.nip}</p>
                         <p><strong>Status Kepegawaian:</strong> {item.status_kepegawaian}</p>
-                        <p><strong>Jenis PTK:</strong> {item.jenis_ptk}</p>
+                        <p><strong>Jenis PTK:</strong> {item.employee_type3.nama}</p>
                         <p><strong>Agama:</strong> {item.agama}</p>
                         <p><strong>Alamat Jalan:</strong> {item.alamat_jalan}</p>
                         <p><strong>RT:</strong> {item.rt}</p>
                         <p><strong>RW:</strong> {item.rw}</p>
                         <p><strong>Nama Dusun:</strong> {item.nama_dusun}</p>
                         <p><strong>Desa/Kelurahan:</strong> {item.desa_kelurahan}</p>
+                        <p><strong>Kecamatan:</strong> {item.kecamatan}</p>
                       </div>
                       <div>
-                        <p><strong>Kecamatan:</strong> {item.kecamatan}</p>
-                        <p><strong>Kode POS:</strong> {item.rw}</p>
+                        <p><strong>Kode POS:</strong> {item.kode_pos}</p>
                         <p><strong>Telepon:</strong> {item.telepon}</p>
                         <p><strong>No HP:</strong> {item.hp}</p>
                         <p><strong>Email:</strong> {item.email}</p>
                         <p><strong>Tugas Tambahan:</strong> {item.tugas_tambahan}</p>
-                        <p><strong>SK CPNS:</strong> {item.sk_cpns}</p>
+                        <p><strong>SK:</strong> {item.sk}</p>
                         <p><strong>Tanggal CPNS:</strong> {item.tanggal_cpns}</p>
                         <p><strong>SK Pengangkatan:</strong> {item.sk_pengangkatan}</p>
                         <p><strong>TMT Pengangkatan:</strong> {item.tmt_pengangkatan}</p>
@@ -56,6 +56,8 @@ const ShowTeacherModal = ({ isOpen, onClose, item }) => {
                         <p><strong>Pangkat Golongan:</strong> {item.pangkat_golongan}</p>
                         <p><strong>Pendidikan:</strong> {item.pendidikan}</p>
                         <p><strong>Gaji:</strong> {item.gaji}</p>
+                        <p><strong>Jenis Pegawai:</strong> {item.employee_type.nama}</p>
+                        <p><strong>Jabatan:</strong> {item.employee_type2.nama}</p>
                     </div>
                 </div>
             </div>
