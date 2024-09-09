@@ -5,7 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import StudentDetailsModal from '../../components/ShowStudentsModal';
-import AddStudentModal from '../../components/AddStudentModal'; 
+import AddStudentModal from '../../components/AddStudentModal';
 import EditStudentModal from '../../components/EditStudentModal'; // Import the Edit Modal component
 import { toast } from 'react-hot-toast';
 
@@ -33,7 +33,7 @@ const StudentData = () => {
     setIsAddModalOpen(false);
   };
 
- const fetchData = async () => {
+  const fetchData = async () => {
     try {
       const token = Cookies.get('token');
       const response = await axios.get('/api/admin/siswa', {
@@ -164,7 +164,7 @@ const StudentData = () => {
         },
         responseType: 'blob', // Ensure response is treated as a file
       });
-  
+
       // Create a link element to download the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -301,14 +301,13 @@ const StudentData = () => {
             </tbody>
           </table>
         </div>
-          <div className="flex mt-5 justify-between">
+        <div className="flex mt-5 justify-between">
           <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
           <button
             onClick={deleteSelected}
             disabled={selectedIds.length === 0}
-            className={`bg-red-500 text-white px-3 h-11 rounded ${
-              selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
-            }`}
+            className={`bg-red-500 text-white px-3 h-11 rounded ${selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
+              }`}
           >
             Hapus Pilihan
           </button>
@@ -327,21 +326,19 @@ const StudentData = () => {
         onSubmit={handleAddStudent}
       />
 
-<EditStudentModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          fetchData={fetchData}
-          studentData={selectedStudent} // Pass the selected student's data
-          onSubmit={(updatedStudent) => {
-            const updatedData = data.map((item) =>
-              item.id === updatedStudent.id ? updatedStudent : item
-            );
-            setData(updatedData);
-            setIsEditModalOpen(false);
-          }}
-        />
-
-    
+      <EditStudentModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        fetchData={fetchData}
+        studentData={selectedStudent} // Pass the selected student's data
+        onSubmit={(updatedStudent) => {
+          const updatedData = data.map((item) =>
+            item.id === updatedStudent.id ? updatedStudent : item
+          );
+          setData(updatedData);
+          setIsEditModalOpen(false);
+        }}
+      />
 
     </>
   );

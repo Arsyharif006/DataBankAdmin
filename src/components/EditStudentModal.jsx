@@ -99,36 +99,66 @@ const EditStudentModal = ({ isOpen, onClose, fetchData, studentData }) => {
         'Content-Type': 'multipart/form-data',
       },
     };
-
   
     const studentFormData = new FormData();
+  
+    // Menambahkan semua field non-file ke FormData
     Object.keys(formData).forEach((key) => {
-      if (key === 'pas_foto' || key === 'scan_ijazah_smp' || key === 'scan_akte_kelahiran' || key === 'scan_kartu_keluarga') {
-        if (formData[key]) {
-          studentFormData.append(key, formData[key]);
-        }
-      } else {
+      if (
+        key !== 'pas_foto' &&
+        key !== 'scan_ijazah_smp' &&
+        key !== 'scan_akte_kelahiran' &&
+        key !== 'scan_kartu_keluarga'
+      ) {
         studentFormData.append(key, formData[key] || '');
       }
     });
   
+    // Menambahkan field file hanya jika file di-upload
+    if (formData.pas_foto instanceof File) {
+      studentFormData.append('pas_foto', formData.pas_foto);
+    }
+    if (formData.scan_ijazah_smp instanceof File) {
+      studentFormData.append('scan_ijazah_smp', formData.scan_ijazah_smp);
+    }
+    if (formData.scan_akte_kelahiran instanceof File) {
+      studentFormData.append('scan_akte_kelahiran', formData.scan_akte_kelahiran);
+    }
+    if (formData.scan_kartu_keluarga instanceof File) {
+      studentFormData.append('scan_kartu_keluarga', formData.scan_kartu_keluarga);
+    }
+  
     try {
       const response = await axios.post(`/api/admin/siswa/${studentData.id}`, studentFormData, config);
       console.log('Response:', response.data);
-      (response.data.success) 
-        fetchData();
-        onClose();
-        toast.success("Berhasil Mengedit data siswa!", {
-          position: "top-center",
+    
+      // Menggunakan response.status untuk memeriksa apakah operasi berhasil
+      if (response.status === 200 || response.status === 201) {
+        toast.success('Berhasil Mengedit data siswa!', {
+          position: 'top-center',
           duration: 5000,
         });
-      } catch (error) {
-        toast.error("Gagal Mengedit data siswa!", {
-          position: "top-center",
+    
+        // Tutup modal setelah sukses
+        onClose();
+    
+        // Refresh data setelah modal ditutup
+        fetchData();
+      } else {
+        toast.error('Gagal Mengedit data siswa!', {
+          position: 'top-center',
           duration: 5000,
         });
       }
+    } catch (error) {
+      // Menangani error dari request
+      toast.error('Gagal Mengedit data siswa!', {
+        position: 'top-center',
+        duration: 5000,
+      });
+    }    
   };
+  
   
 
   if (!isOpen) return null;

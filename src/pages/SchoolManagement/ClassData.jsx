@@ -5,6 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import AddClassModal from '../../components/AddClassModal';
+import EditClassModal from '../../components/EditClassModal';
 import { toast } from 'react-hot-toast';
 
 
@@ -15,6 +16,15 @@ const ClassData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Add this line
+  const [classData, setClassData] = useState(null);
+
+  const editAccount = (id) => {
+    const selectedClass = data.find((item) => item.id === id);
+    setClassData(selectedClass);
+    setIsEditModalOpen(true);
+  };
+
 
   const itemsPerPage = 5;
 
@@ -114,18 +124,14 @@ const ClassData = () => {
     }
   };
 
-  const editAccount = (id) => {
-    alert(`Editing room with id: ${id}`);
-  };
-
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
   const filteredData = Array.isArray(data)
     ? data.filter(item =>
-        item.nama && item.nama.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      item.nama && item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : [];
 
   const offset = currentPage * itemsPerPage;
@@ -169,7 +175,7 @@ const ClassData = () => {
         },
         responseType: 'blob', // Ensure response is treated as a file
       });
-  
+
       // Create a link element to download the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -190,7 +196,7 @@ const ClassData = () => {
       });
     }
   };
-  
+
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -204,7 +210,7 @@ const ClassData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Data Kelas</h1>
-          <p className='text-gray-500'>/ kelas-admin</p>
+          <p className='text-gray-500'>/ class-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -228,13 +234,13 @@ const ClassData = () => {
               Import
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
-          <button
-            onClick={openModal}
-            className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
-          >
-            Tambah Data
-          </button>
-        </div>
+            <button
+              onClick={openModal}
+              className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
+            >
+              Tambah Data
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
           <table className="min-w-full bg-white">
@@ -287,6 +293,13 @@ const ClassData = () => {
         </div>
         {isModalOpen && (
           <AddClassModal closeModal={closeModal} fetchData={fetchData} />
+        )}
+        {isEditModalOpen && (
+          <EditClassModal
+            closeModal={() => setIsEditModalOpen(false)}
+            fetchData={fetchData}
+            classData={classData}
+          />
         )}
       </div>
     </>

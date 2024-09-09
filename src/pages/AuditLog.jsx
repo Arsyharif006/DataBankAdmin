@@ -131,23 +131,6 @@ const AuditLog = () => {
               placeholder="End Date"
             />
           </div>
-          <button className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200 flex items-center space-x-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span>Export excel</span>
-          </button>
         </div>
 
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">

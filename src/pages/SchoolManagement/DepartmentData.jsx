@@ -5,6 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import AddDepartmenModal from '../../components/AddDepartmenModal';
+import EditDepartmenModal from '../../components/EditDepartmentModal';
 import { toast } from 'react-hot-toast';
 
 
@@ -15,33 +16,37 @@ const DepartmenData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // New state to control if it's editing
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
 
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.get('/api/admin/jurusan', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const rooms = response.data.data;
-        if (Array.isArray(rooms)) {
-          setData(rooms);
-        } else {
-          console.error('Unexpected data format:', rooms);
-          setData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  // Move fetchData outside of useEffect so it can be reused
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/jurusan', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const rooms = response.data.data;
+      if (Array.isArray(rooms)) {
+        setData(rooms);
+      } else {
+        console.error('Unexpected data format:', rooms);
+        setData([]);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
+  // Sorting function
   const sortData = (key) => {
     let sortedData = [...data];
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -61,6 +66,7 @@ const DepartmenData = () => {
     return sortConfig.direction === 'ascending' ? <FaSortUp className="inline ml-2" /> : <FaSortDown className="inline ml-2" />;
   };
 
+  // Toggle selection for batch delete
   const toggleSelect = (id) => {
     setSelectedIds((prevSelected) => {
       if (prevSelected.includes(id)) {
@@ -71,11 +77,10 @@ const DepartmenData = () => {
     });
   };
 
+  // Delete selected departments
   const deleteSelected = async () => {
     try {
       const token = Cookies.get('token');
-      
-      // Create an array of delete requests
       const deleteRequests = selectedIds.map(id =>
         axios.delete(`/api/admin/jurusan/${id}`, {
           headers: {
@@ -83,11 +88,7 @@ const DepartmenData = () => {
           },
         })
       );
-  
-      // Execute all delete requests concurrently
       await Promise.all(deleteRequests);
-  
-      // Filter out deleted rooms from the data
       setData(data.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
       toast.success("Berhasil Menghapus data yang dipilih!", {
@@ -102,8 +103,8 @@ const DepartmenData = () => {
       });
     }
   };
-  
 
+  // Delete a single department
   const deleteAccount = async (id) => {
     try {
       const token = Cookies.get('token');
@@ -126,14 +127,31 @@ const DepartmenData = () => {
     }
   };
 
+  // Edit department handler
   const editAccount = (id) => {
-    alert(`Editing room with id: ${id}`);
+    const departmentToEdit = data.find(item => item.id === id);
+    setSelectedDepartment(departmentToEdit);
+    setIsEditing(true); // Set to editing mode
+    setIsModalOpen(true);
+  };
+
+  // Add department modal handler
+  const openAddModal = () => {
+    setIsEditing(false); // Set to adding mode
+    setSelectedDepartment(null); // Reset selected department
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    fetchData(); // Re-fetch data after closing modal
   };
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
+  // Filtering and pagination
   const filteredData = Array.isArray(data)
     ? data.filter(item =>
         item.nama && item.nama.toLowerCase().includes(searchQuery.toLowerCase())
@@ -144,6 +162,7 @@ const DepartmenData = () => {
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
+  // Import and export functions (unchanged)
   const importData = async (event) => {
     const file = event.target.files[0];
     const formData = new FormData();
@@ -179,17 +198,16 @@ const DepartmenData = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'blob', // Ensure response is treated as a file
+        responseType: 'blob',
       });
-  
-      // Create a link element to download the file
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'Konsentrasi_Keahlian.xlsx'); // Name of the file to be downloaded
+      link.setAttribute('download', 'Konsentrasi_Keahlian.xlsx');
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link); // Remove the link after download
+      document.body.removeChild(link);
       toast.success("Berhasil Export Data Jurusan!", {
         position: "top-center",
         duration: 5000,
@@ -202,10 +220,6 @@ const DepartmenData = () => {
       });
     }
   };
-  
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   return (
     <>
@@ -213,7 +227,7 @@ const DepartmenData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Data Jurusan</h1>
-          <p className='text-gray-500'>/ jurusan-admin</p>
+          <p className='text-gray-500'>/ department-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -238,7 +252,7 @@ const DepartmenData = () => {
               <input type="file" className="hidden" accept=".xlsx, .xls" onChange={importData} />
             </label>
           <button
-            onClick={openModal}
+            onClick={openAddModal}
             className="bg-green-500 text-white px-3 h-11 rounded hover:bg-green-600"
           >
             Tambah Data
@@ -290,9 +304,23 @@ const DepartmenData = () => {
             Hapus Pilihan
           </button>
         </div>
-        {isModalOpen && (
-          <AddDepartmenModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
-        )}
+{isModalOpen && (
+  isEditing ? (
+    <EditDepartmenModal
+      isOpen={isModalOpen}
+      closeModal={closeModal}
+      department={selectedDepartment} // Pass selected department for editing
+      fetchData={fetchData}  // Pass fetchData to EditDepartmenModal too
+    />
+  ) : (
+    <AddDepartmenModal 
+      isOpen={isModalOpen} 
+      closeModal={closeModal} 
+      fetchData={fetchData}  // Pass fetchData to AddDepartmenModal
+    />
+  )
+)}
+
       </div>
     </>
   );

@@ -5,6 +5,7 @@ import { FaSort, FaSortUp, FaSortDown, FaEdit, FaTrash, FaCheckSquare, FaSquare,
 import Pagination from '../../components/Pagination';
 import Sidebar from '../../components/Sidebar';
 import AddRoomModal from '../../components/AddRoomModal';
+import EditRoomModal from '../../components/EditRoomModal';
 import { toast } from 'react-hot-toast';
 
 
@@ -15,30 +16,32 @@ const RoomData = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
+  const [selectedRoom, setSelectedRoom] = useState(null); // State for selected room
 
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('token');
-        const response = await axios.get('/api/admin/ruangan', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const rooms = response.data.data;
-        if (Array.isArray(rooms)) {
-          setData(rooms);
-        } else {
-          console.error('Unexpected data format:', rooms);
-          setData([]);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/ruangan', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const rooms = response.data.data;
+      if (Array.isArray(rooms)) {
+        setData(rooms);
+      } else {
+        console.error('Unexpected data format:', rooms);
+        setData([]);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -52,6 +55,11 @@ const RoomData = () => {
       setSortConfig({ key, direction: 'ascending' });
     }
     setData(sortedData);
+  };
+
+  const openEditModal = (room) => {
+    setSelectedRoom(room);
+    setIsEditModalOpen(true);
   };
 
   const getSortIcon = (key) => {
@@ -213,7 +221,7 @@ const RoomData = () => {
       <div className="container mx-auto mt-10 px-10">
         <div className="justify-start items-start mb-16">
           <h1 className="text-2xl font-semibold text-gray-800">Data Ruangan</h1>
-          <p className='text-gray-500'>/ ruangan-admin</p>
+          <p className='text-gray-500'>/ room-admin</p>
         </div>
         <div className="flex justify-between mb-4">
           <div className="relative">
@@ -268,7 +276,10 @@ const RoomData = () => {
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.nama}</td>
                   <td className="py-3 px-4 border-b text-start space-x-4">
-                    <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
+                  <button
+                      onClick={() => openEditModal(item)}
+                      className="text-blue-500 hover:text-blue-600"
+                    >
                       <FaEdit />
                     </button>
                     <button onClick={() => deleteAccount(item.id)} className="text-red-500 hover:text-red-600">
@@ -293,6 +304,12 @@ const RoomData = () => {
         {isModalOpen && (
           <AddRoomModal closeModal={closeModal} fetchData={() => { /* Call fetchData to reload data */ }} />
         )}
+          <EditRoomModal
+          isOpen={isEditModalOpen}
+          closeModal={() => setIsEditModalOpen(false)}
+          roomData={selectedRoom}
+          fetchData={fetchData}
+        />
       </div>
     </>
   );

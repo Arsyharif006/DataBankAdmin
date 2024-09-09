@@ -4,8 +4,12 @@ import { FaTimes } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import { toast } from 'react-hot-toast';
 
-const AddClassModal = ({ closeModal, fetchData }) => {
-  const [formData, setFormData] = useState({ name: '', tingkat: '', department: '' });
+const EditClassModal = ({ closeModal, fetchData, classData }) => {
+  const [formData, setFormData] = useState({
+    name: classData.nama || '',
+    tingkat: classData.tingkat || '',
+    department: classData.department_id || ''
+  });
   const [departments, setDepartments] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,7 +49,7 @@ const AddClassModal = ({ closeModal, fetchData }) => {
     setIsSubmitting(true);
     try {
       const token = Cookies.get('token');
-      await axios.post('/api/admin/kelas', 
+      await axios.put(`/api/admin/kelas/${classData.id}`, 
         { 
           nama: formData.name, 
           tingkat: formData.tingkat, 
@@ -59,13 +63,13 @@ const AddClassModal = ({ closeModal, fetchData }) => {
       );
       fetchData(); // Refresh data
       closeModal();
-      toast.success("Berhasil Menambah data Kelas!", {
+      toast.success("Berhasil Mengubah data Kelas!", {
         position: "top-center",
         duration: 5000,
       });
     } catch (error) {
-      console.error('Error creating class:', error);
-      toast.error("Gagal Menambah data Kelas!", {
+      console.error('Error editing class:', error);
+      toast.error("Gagal Mengubah data Kelas!", {
         position: "top-center",
         duration: 5000,
       });
@@ -78,7 +82,7 @@ const AddClassModal = ({ closeModal, fetchData }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-semibold">Tambah Data Kelas</h2>
+          <h2 className="text-xl font-semibold">Edit Data Kelas</h2>
           <button
             onClick={closeModal}
             className="text-gray-500 hover:text-gray-700"
@@ -139,9 +143,9 @@ const AddClassModal = ({ closeModal, fetchData }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+            className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isSubmitting ? 'Loading...' : 'Tambah Kelas'}
+            {isSubmitting ? 'Loading...' : 'Edit Kelas'}
           </button>
         </form>
       </div>
@@ -149,4 +153,4 @@ const AddClassModal = ({ closeModal, fetchData }) => {
   );
 };
 
-export default AddClassModal;
+export default EditClassModal;

@@ -1,33 +1,88 @@
-import React from 'react';
-import { Line, Bar } from 'react-chartjs-2';
+import React, { useEffect, useState } from 'react';
+import axios from '../api/Index';
+import Cookies from 'js-cookie'; // Import js-cookie untuk mengakses cookie
+import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import Sidebar from '../components/Sidebar';
+import Document from '../images/dokumen.pdf';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  const totalDataChartData = {
-    labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  // State untuk menyimpan data dari API
+  const [dashboardData, setDashboardData] = useState({
+    total_students: 0,
+    total_employees: 0,
+    total_users: 0,
+    logs_per_month: {},
+  });
+
+  // State untuk chart data
+  const [chartData, setChartData] = useState({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
-        label: 'Total Data Guru dan Siswa',
-        data: [120, 150, 180, 200, 220, 240, 260, 280, 300],
+        label: 'Total Request Api',
+        data: Array(12).fill(0), // Inisialisasi dengan 0 untuk semua bulan
         borderColor: 'rgb(75, 192, 192)',
         fill: false,
       },
     ],
+  });
+
+  // Fungsi untuk fetch data dari backend
+  const fetchDashboardData = async () => {
+    try {
+      // Ambil token dari cookie
+      const token = Cookies.get('auth_token'); // Sesuaikan dengan nama cookie token Anda
+
+      // Buat request dengan header Authorization
+      const response = await axios.get('/api/admin/dashboard', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data.data;
+      
+      // Update state dengan data dari API
+      setDashboardData({
+        total_students: data.total_students,
+        total_employees: data.total_employees,
+        total_users: data.total_users,
+        logs_per_month: data.logs_per_month,
+      });
+
+      // Update chart data
+      const newChartData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+          {
+            label: 'Total Request Api',
+            data: Array(12).fill(0), // Inisialisasi dengan 0 untuk semua bulan
+            borderColor: 'rgb(75, 192, 192)',
+            fill: false,
+          },
+        ],
+      };
+
+      // Iterasi logs_per_month dan masukkan ke dalam chart
+      Object.keys(data.logs_per_month).forEach((key) => {
+        const month = parseInt(key.split('-')[1], 10) - 1; // Ambil bulan dari format YYYY-MM
+        newChartData.datasets[0].data[month] = data.logs_per_month[key];
+      });
+
+      setChartData(newChartData);
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    }
   };
 
-  const akunGuruChartData = {
-    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-    datasets: [
-      {
-        label: 'Total Akun Guru',
-        data: [15, 20, 25, 30, 35, 40, 45],
-        backgroundColor: 'rgb(75, 192, 192)',
-      },
-    ],
-  };
+  // useEffect untuk memanggil API saat komponen di-mount
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   const lineChartOptions = {
     responsive: true,
@@ -40,17 +95,12 @@ const Dashboard = () => {
         text: 'Data Overview',
       },
     },
-  };
-
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Akun Guru',
+    scales: {
+      y: {
+        beginAtZero: true, 
+        ticks: {
+          stepSize: 1,
+        },
       },
     },
   };
@@ -65,44 +115,34 @@ const Dashboard = () => {
         </div>
         <div className="flex justify-end mb-10">
           <a 
-            href="/documentation" 
+            href={Document}  // URL file PDF di server Anda
+            target="_blank" // Open in a new tab
+            rel="noopener noreferrer" // Security best practice
             className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 transition-colors"
           >
             Lihat Dokumentasi
           </a>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="bg-white p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Akun Guru</div>
-            <div className="text-2xl font-bold">45</div>
+            <div className="text-sm text-gray-500">Total Akun</div>
+            <div className="text-2xl font-bold">{dashboardData.total_users}</div>
           </div>
           <div className="bg-white p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Client</div>
-            <div className="text-2xl font-bold">150</div>
+            <div className="text-sm text-gray-500">Total Data Siswa</div>
+            <div className="text-2xl font-bold">{dashboardData.total_students}</div>
           </div>
           <div className="bg-white p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Data Guru dan Siswa</div>
-            <div className="text-2xl font-bold">300</div>
-          </div>
-          <div className="bg-white p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Data Ekstrakulikuler</div>
-            <div className="text-2xl font-bold">130</div>
+            <div className="text-sm text-gray-500">Total Data Guru dan Staff</div>
+            <div className="text-2xl font-bold">{dashboardData.total_employees}</div>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-8">
           <div className="bg-white p-4 shadow rounded-lg">
-            <Bar data={akunGuruChartData} options={barChartOptions} />
-            <div className="mt-2 text-sm text-gray-500">Akun Guru Per Hari</div>
+            <Line data={chartData} options={lineChartOptions} />
+            <div className="mt-2 text-sm text-gray-500">Total Request tahunan</div>
           </div>
-          <div className="bg-white p-4 shadow rounded-lg">
-            <Line data={totalDataChartData} options={lineChartOptions} />
-            <div className="mt-2 text-sm text-gray-500">Total Data Guru dan Siswa per Bulan</div>
-          </div>
-         
         </div>
-
-       
       </div>
     </>
   );
