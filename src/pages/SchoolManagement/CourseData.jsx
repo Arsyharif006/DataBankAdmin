@@ -32,10 +32,6 @@ const CourseData = () => {
       setData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error("Gagal memuat data!", {
-        position: "top-center",
-        duration: 5000,
-      });
     }
   };
 

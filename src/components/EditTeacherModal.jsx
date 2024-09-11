@@ -12,6 +12,7 @@ const EditTeacherModal = ({ isOpen, onClose, fetchData, selectedTeacher }) => {
         gender_id: '',
         tempat_lahir: '',
         tanggal_lahir: '',
+        nik: '',
         nip: '',
         status_kepegawaian: '',
         jenis_ptk: '',
@@ -103,6 +104,9 @@ const EditTeacherModal = ({ isOpen, onClose, fetchData, selectedTeacher }) => {
               <label><strong>Nama lengkap:</strong></label>
               <input type="text" name="nama" value={formData.nama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
+              <label><strong>NIK:</strong></label>
+              <input type="number" name="nik" value={formData.nik} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+              
               <label><strong>NIP:</strong></label>
               <input type="number" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 

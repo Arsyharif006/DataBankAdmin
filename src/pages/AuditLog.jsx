@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import Sidebar from '../components/Sidebar';
 import Pagination from '../components/Pagination';
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { toast } from 'react-hot-toast';
 
 const AuditLog = () => {
   const [data, setData] = useState([]);
@@ -45,6 +46,33 @@ const AuditLog = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const deleteLog = async () => {
+    try {
+      const token = Cookies.get('token');
+      await axios.delete(`/api/admin/audit-logs`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Setelah berhasil, perbarui data atau beri notifikasi
+      toast.success('Semua log berhasil dihapus!', {
+        position: 'top-center',
+        duration: 5000,
+      });
+
+      // Panggil fetchData untuk memperbarui data
+      fetchData();
+
+    } catch (error) {
+      console.error('Error deleting all logs:', error);
+      toast.error('Gagal menghapus semua log!', {
+        position: 'top-center',
+        duration: 5000,
+      });
+    }
+  };
 
   useEffect(() => {
     handleFilterByDate();
@@ -103,6 +131,37 @@ const AuditLog = () => {
   const currentData = filteredData.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
+  const exportData = async () => {
+    try {
+      const token = Cookies.get('token');
+      const response = await axios.get('/api/admin/history/export', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob', // Ensure response is treated as a file
+      });
+
+      // Create a link element to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'AuditLog.xlsx'); // Name of the file to be downloaded
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Remove the link after download
+      toast.success("Berhasil Export Data AuditLog!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      toast.error("Gagal Mengekspor data!", {
+        position: "top-center",
+        duration: 5000,
+      });
+    }
+  };
+
   return (
     <>
       <Sidebar />
@@ -131,6 +190,20 @@ const AuditLog = () => {
               placeholder="End Date"
             />
           </div>
+          <div className='space-x-4'>
+            <button
+              onClick={exportData}
+              className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md hover:bg-indigo-200"
+            >
+              Export
+            </button>
+            <button
+              onClick={deleteLog}
+              className={`bg-red-500 text-white px-3 h-11 rounded`}
+            >
+              Hapus Log
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -144,10 +217,10 @@ const AuditLog = () => {
                     <span className="ml-2">{getSortIcon('user.name')}</span>
                   </div>
                 </th>
+                <th className="text-left py-3 px-4 font-medium">Nama Root</th>
                 <th className="text-left py-3 px-4 font-medium">Aktivitas</th>
-                <th className="text-left py-3 px-4 font-medium">Model</th>
-                <th className="text-left py-3 px-4 font-medium">Respon</th>
                 <th className="text-left py-3 px-4 font-medium">Respon Code</th>
+                <th className="text-left py-3 px-4 font-medium">Message</th>
                 <th className="text-left py-3 px-4 font-medium cursor-pointer" onClick={() => handleSort('created_at')}>
                   <div className="flex items-center">
                     Tanggal
@@ -161,10 +234,10 @@ const AuditLog = () => {
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.user.name}</td>
-                  <td className="py-3 px-4 border-b">{item.action}</td>
                   <td className="py-3 px-4 border-b">{item.model}</td>
-                  <td className="py-3 px-4 border-b">{item.response}</td>
+                  <td className="py-3 px-4 border-b">{item.action}</td>
                   <td className="py-3 px-4 border-b">{item.response_code}</td>
+                  <td className="py-3 px-4 border-b">{item.response}</td>
                   <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleString()}</td>
                 </tr>
               ))}

@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
   const [formData, setFormData] = useState({
     nama: '',
+    nik: '',
     nuptk: '',
     gender_id: '',
     tempat_lahir: '',
@@ -101,6 +102,9 @@ const AddTeacherModal = ({ isOpen, onClose, fetchData }) => {
               <label><strong>Nama lengkap:</strong></label>
               <input type="text" name="nama" value={formData.nama} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 
+              <label><strong>NIK:</strong></label>
+              <input type="number" name="nik" value={formData.nik} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
+             
               <label><strong>NIP:</strong></label>
               <input type="number" name="nip" value={formData.nip} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md"  />
 

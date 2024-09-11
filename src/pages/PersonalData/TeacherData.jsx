@@ -258,7 +258,7 @@ const TeacherData = () => {
                 <th className="py-3 px-4 text-left font-medium cursor-pointer flex items-center" onClick={() => sortData('nama')}>
                   Nama {getSortIcon('nama')}
                 </th>
-                <th className="py-3 px-4 text-left font-medium">NIP</th>
+                <th className="py-3 px-4 text-left font-medium">NIK</th>
                 <th className="py-3 px-4 text-left font-medium">Email</th>
                 <th className="py-3 px-4 text-left font-medium">No. HP</th>
                 <th className="py-3 px-4 text-left font-medium">Jabatan</th>
@@ -275,7 +275,7 @@ const TeacherData = () => {
                   </td>
                   <td className="px-4 py-3 text-center">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.nama}</td>
-                  <td className="py-3 px-4 border-b">{item.nip}</td>
+                  <td className="py-3 px-4 border-b">{item.nik}</td>
                   <td className="py-3 px-4 border-b">{item.email}</td>
                   <td className="py-3 px-4 border-b">{item.hp}</td>
                   <td className="py-3 px-4 border-b">{item.employee_type2.nama}</td>

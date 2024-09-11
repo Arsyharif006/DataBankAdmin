@@ -31,6 +31,7 @@ const ShowTeacherModal = ({ isOpen, onClose, item }) => {
                         <p><strong>Jenis Kelamin:</strong> {item.gender.nama}</p>
                         <p><strong>Tempat Lahir:</strong> {item.tempat_lahir}</p>
                         <p><strong>Tanggal Lahir:</strong> {item.tanggal_lahir}</p>
+                        <p><strong>NIK:</strong> {item.nik}</p>
                         <p><strong>NIP:</strong> {item.nip}</p>
                         <p><strong>Status Kepegawaian:</strong> {item.status_kepegawaian}</p>
                         <p><strong>Jenis PTK:</strong> {item.employee_type3.nama}</p>

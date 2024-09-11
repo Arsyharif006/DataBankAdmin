@@ -98,7 +98,7 @@ export function Sidebar() {
           className="h-12 w-11"
         />
         <div className="text-md ml-2 font-medium text-gray-200">
-          <p>Data Bank</p>
+          <p>Bank Data</p>
           <p>SMKN 1 Ciomas</p>
         </div>
       </div>

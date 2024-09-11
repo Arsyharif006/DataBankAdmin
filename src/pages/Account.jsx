@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../api/Index';
-import { FaSort, FaSortUp, FaSortDown, FaTrash, FaSearch } from 'react-icons/fa';
+import { FaSort, FaSortUp, FaSortDown, FaTrash, FaSearch, FaEdit, FaBan } from 'react-icons/fa';
 import Pagination from '../components/Pagination';
 import Sidebar from '../components/Sidebar';
 import AddAccountModal from '../components/AddAccountModal';
 import Cookies from 'js-cookie';
 import { toast } from 'react-hot-toast';
+import EditAccountModal from '../components/EditAccountModal';
 
 const Account = () => {
   const [data, setData] = useState([]);
@@ -13,6 +14,8 @@ const Account = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const itemsPerPage = 5;
 
   const fetchData = async () => {
@@ -39,6 +42,11 @@ const Account = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const openEditModal = (account) => {
+    setSelectedAccount(account);
+    setIsEditModalOpen(true);
+  };
 
   const sortData = (key) => {
     let sortedData = [...data];
@@ -79,6 +87,37 @@ const Account = () => {
       toast.error("Gagal menghapus akun.");
     }
   };
+
+  const toggleBlockStatus = async (id, isBlocked) => {
+    try {
+      const token = Cookies.get('token');
+      const url = isBlocked
+        ? `/api/admin/users/${id}/unban`
+        : `/api/admin/users/${id}/ban`;
+      await axios.put(
+        url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await fetchData(); // Ensure this is awaited
+      toast.success(
+        isBlocked ? 'Akun berhasil di-unblock!' : 'Akun berhasil di-block!'
+      );
+    } catch (error) {
+      console.error(
+        isBlocked ? 'Error unblocking account:' : 'Error blocking account:',
+        error
+      );
+      toast.error(
+        isBlocked ? 'Gagal unblock akun.' : 'Gagal block akun.'
+      );
+    }
+  };
+
 
   const filteredData = data.filter((item) =>
     item.username.toLowerCase().includes(searchQuery.toLowerCase())
@@ -138,25 +177,44 @@ const Account = () => {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {currentData.map((item, index) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
-                  <td className="py-3 px-4 border-b">{item.name}</td>
-                  <td className="py-3 px-4 border-b">{item.username}</td>
-                  <td className="py-3 px-4 border-b">{item.role.name}</td>
-                  <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleDateString()}</td>
-                  <td className="py-3 px-4 border-b text-center">
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        onClick={() => deleteAccount(item.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {currentData.map((item, index) => {
+                const isBanned = Number(item.banned) === 1; // Convert to Number in case it's a string
+                return (
+                  <tr key={item.id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
+                    <td className="py-3 px-4 border-b">{item.name}</td>
+                    <td className="py-3 px-4 border-b">{item.username}</td>
+                    <td className="py-3 px-4 border-b">{item.role.name}</td>
+                    <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleDateString()}</td>
+                    <td className="py-3 px-4 border-b text-center">
+                      <div className="flex justify-center space-x-2">
+                        <button
+                          onClick={() => openEditModal(item)}
+                          className="text-blue-500 hover:text-blue-600"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => deleteAccount(item.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <FaTrash />
+                        </button>
+                        <button
+                          onClick={() => toggleBlockStatus(item.id, isBanned)}
+                          className={`${isBanned
+                              ? 'text-gray-400 hover:text-gray-500'
+                              : 'text-red-500 hover:text-red-700'
+                            }`}
+                        >
+                          {isBanned ? <FaBan /> : <FaBan />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+
             </tbody>
           </table>
         </div>
@@ -173,7 +231,12 @@ const Account = () => {
           fetchData={fetchData} // Ensure fetchData is passed to refresh data after adding
         />
       )}
-
+      <EditAccountModal
+        isOpen={isEditModalOpen}
+        onRequestClose={() => setIsEditModalOpen(false)}  // Changed from closeModal to onRequestClose
+        accountData={selectedAccount}  // Ensure correct prop name 'accountData'
+        fetchData={fetchData}
+      />
     </>
   );
 };
