@@ -266,7 +266,8 @@ const RoomData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((item, index) => (
+              {currentData.length < 0 ? (
+              currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 border-b text-center">
                     <button onClick={() => toggleSelect(item.id)}>
@@ -287,7 +288,14 @@ const RoomData = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="py-4 text-center text-gray-500">
+                  Tidak ada data yang ditemukan.
+                </td>
+              </tr>
+            )}
             </tbody>
           </table>
         </div>

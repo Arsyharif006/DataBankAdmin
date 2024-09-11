@@ -177,44 +177,51 @@ const Account = () => {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {currentData.map((item, index) => {
-                const isBanned = Number(item.banned) === 1; // Convert to Number in case it's a string
-                return (
-                  <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
-                    <td className="py-3 px-4 border-b">{item.name}</td>
-                    <td className="py-3 px-4 border-b">{item.username}</td>
-                    <td className="py-3 px-4 border-b">{item.role.name}</td>
-                    <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleDateString()}</td>
-                    <td className="py-3 px-4 border-b text-center">
-                      <div className="flex justify-center space-x-2">
-                        <button
-                          onClick={() => openEditModal(item)}
-                          className="text-blue-500 hover:text-blue-600"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => deleteAccount(item.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FaTrash />
-                        </button>
-                        <button
-                          onClick={() => toggleBlockStatus(item.id, isBanned)}
-                          className={`${isBanned
+              {currentData.length > 0 ? (
+                currentData.map((item, index) => {
+                  const isBanned = Number(item.banned) === 1; // Convert to Number in case it's a string
+                  return (
+                    <tr key={item.id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4 border-b text-center">{offset + index + 1}</td>
+                      <td className="py-3 px-4 border-b">{item.name}</td>
+                      <td className="py-3 px-4 border-b">{item.username}</td>
+                      <td className="py-3 px-4 border-b">{item.role.name}</td>
+                      <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleDateString()}</td>
+                      <td className="py-3 px-4 border-b text-center">
+                        <div className="flex justify-center space-x-2">
+                          <button
+                            onClick={() => openEditModal(item)}
+                            className="text-blue-500 hover:text-blue-600"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => deleteAccount(item.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash />
+                          </button>
+                          <button
+                            onClick={() => toggleBlockStatus(item.id, isBanned)}
+                            className={`${isBanned
                               ? 'text-gray-400 hover:text-gray-500'
                               : 'text-red-500 hover:text-red-700'
-                            }`}
-                        >
-                          {isBanned ? <FaBan /> : <FaBan />}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-
+                              }`}
+                          >
+                            {isBanned ? <FaBan /> : <FaBan />}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="6" className="py-4 text-center text-gray-500">
+                    Tidak ada data yang ditemukan.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

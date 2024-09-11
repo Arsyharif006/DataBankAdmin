@@ -266,7 +266,8 @@ const TeacherData = () => {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {currentPageData.map((item, index) => (
+            {currentPageData.length > 0 ? (
+              currentPageData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-100">
                   <td className="px-4 py-3 text-center">
                     <button onClick={() => toggleSelect(item.id)}>
@@ -296,7 +297,14 @@ const TeacherData = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className="py-4 text-center text-gray-500">
+                  Tidak ada data yang ditemukan.
+                </td>
+              </tr>
+            )}
             </tbody>
           </table>
         </div>
