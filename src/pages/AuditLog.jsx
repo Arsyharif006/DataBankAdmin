@@ -166,7 +166,7 @@ const AuditLog = () => {
     <>
       <Sidebar />
       <div className="container mx-auto mt-10 px-10">
-        <div className="justify-start items-start mb-16">
+        <div className="justify-start items-start mb-10">
           <h1 className="text-2xl font-semibold text-gray-800">Audit Log</h1>
           <p className="text-gray-500">/ auditlog-admin</p>
         </div>
@@ -211,9 +211,9 @@ const AuditLog = () => {
             <thead className="bg-gray-700 text-gray-50">
               <tr>
                 <th className="text-left py-3 px-4 font-medium">No</th>
-                <th className="text-left py-3 px-4 font-medium cursor-pointer" onClick={() => handleSort('user.name')}>
+                <th className="text-left py-3 px-2 font-medium cursor-pointer" onClick={() => handleSort('user.name')}>
                   <div className="flex items-center">
-                    Nama User
+                    Nama
                     <span className="ml-2">{getSortIcon('user.name')}</span>
                   </div>
                 </th>
@@ -230,25 +230,25 @@ const AuditLog = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length < 0 ? (
-              currentData.map((item, index) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="py-3 px-4 border-b">{offset + index + 1}</td>
-                  <td className="py-3 px-4 border-b">{item.user.name}</td>
-                  <td className="py-3 px-4 border-b">{item.model}</td>
-                  <td className="py-3 px-4 border-b">{item.action}</td>
-                  <td className="py-3 px-4 border-b">{item.response_code}</td>
-                  <td className="py-3 px-4 border-b">{item.response}</td>
-                  <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleString()}</td>
+              {currentData.length > 0 ? (
+                currentData.map((item, index) => (
+                  <tr key={item.id} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b">{offset + index + 1}</td>
+                    <td className="py-3 px-2 border-b">{item.user?.name || 'User'}</td>
+                    <td className="py-3 px-4 border-b">{item.model}</td>
+                    <td className="py-3 px-4 border-b">{item.action}</td>
+                    <td className="py-3 px-4 border-b">{item.response_code}</td>
+                    <td className="py-3 px-4 border-b">{item.response}</td>
+                    <td className="py-3 px-4 border-b">{new Date(item.created_at).toLocaleString()}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="py-4 text-center text-gray-500">
+                    Tidak ada data yang ditemukan.
+                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="9" className="py-4 text-center text-gray-500">
-                  Tidak ada data yang ditemukan.
-                </td>
-              </tr>
-            )}
+              )}
             </tbody>
           </table>
         </div>

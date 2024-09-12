@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-hot-toast';
 
 const AddClassModal = ({ closeModal, fetchData }) => {
-  const [formData, setFormData] = useState({ name: '', tingkat: '', department: '' });
+  const [formData, setFormData] = useState({ name: '', department: '' });
   const [departments, setDepartments] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,10 +45,10 @@ const AddClassModal = ({ closeModal, fetchData }) => {
     setIsSubmitting(true);
     try {
       const token = Cookies.get('token');
-      await axios.post('/api/admin/kelas', 
-        { 
-          nama: formData.name, 
-          tingkat: formData.tingkat, 
+      await axios.post('/api/admin/kelas',
+        {
+          nama: formData.name,
+          tingkat: formData.tingkat,
           department_id: formData.department // Send only the department ID
         },
         {
@@ -89,35 +89,16 @@ const AddClassModal = ({ closeModal, fetchData }) => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 mb-2">Nama Kelas</label>
-            <select
+            <input
               id="name"
+              type="name"
+              name="name"
               value={formData.name}
+              placeholder="Contoh (10 PPLG 1)"
               onChange={handleChange}
               className="border rounded w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-            >
-              <option value="" disabled>Pilih Kelas</option>
-              <option value="Kelas 10">Kelas 10</option>
-              <option value="Kelas 11">Kelas 11</option>
-              <option value="Kelas 12">Kelas 12</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="tingkat" className="block text-gray-700 mb-2">Tingkat</label>
-            <select
-              id="tingkat"
-              value={formData.tingkat}
-              onChange={handleChange}
-              className="border rounded w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="" disabled>Pilih Tingkat</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
+            />
           </div>
           <div className="mb-4">
             <label htmlFor="department" className="block text-gray-700 mb-2">Jurusan</label>

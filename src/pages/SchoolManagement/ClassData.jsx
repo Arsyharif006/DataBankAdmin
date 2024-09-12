@@ -252,12 +252,11 @@ const ClassData = () => {
                   Nama Kelas {getSortIcon('nama')}
                 </th>
                 <th className="text-left py-3 px-4 font-medium">Jurusan</th>
-                <th className="text-left py-3 px-4 font-medium">Tingkat</th>
                 <th className="text-start py-3 px-4 font-medium">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {currentData.length < 0 ? (
+              {currentData.length > 0 ? (
               currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 border-b text-center">
@@ -268,7 +267,6 @@ const ClassData = () => {
                   <td className="py-3 px-4 border-b">{offset + index + 1}</td>
                   <td className="py-3 px-4 border-b">{item.nama}</td>
                   <td className="py-3 px-4 border-b">{item.department.nama}</td>
-                  <td className="py-3 px-4 border-b">{item.tingkat}</td>
                   <td className="py-3 px-4 border-b text-start space-x-4">
                     <button onClick={() => editAccount(item.id)} className="text-blue-500 hover:text-blue-600">
                       <FaEdit />

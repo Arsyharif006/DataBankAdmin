@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import Sidebar from '../components/Sidebar';
-import Document from '../images/dokumen.pdf';
 import { IoMdDownload } from 'react-icons/io'; // Import the download icon
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -103,8 +102,9 @@ const Dashboard = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const handleDownload = (url, filename) => {
-    // Programmatically trigger download
+  const handleDownload = (filename) => {
+    // Create URL for file in the public folder
+    const url = `/templates/${filename}`;
     const link = downloadLink.current;
     link.href = url;
     link.download = filename;
@@ -123,13 +123,14 @@ const Dashboard = () => {
         </div>
         <div className="flex justify-end mb-10 space-x-2">
           <a
-            href={Document}
+            href={`${import.meta.env.VITE_APP_URL}/dokumen.pdf`} // Assuming the PDF is in the public folder
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 transition-colors"
           >
             Lihat Dokumentasi
           </a>
+
           <div className="relative">
             <button
               onClick={handleDropdownToggle}
@@ -140,43 +141,43 @@ const Dashboard = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
                 <button
-                  onClick={() => handleDownload('/path/to/student-template.xlsx')}
+                  onClick={() => handleDownload('template-students.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Siswa
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/teacher-template.xlsx')}
+                  onClick={() => handleDownload('template-teacher.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Guru/Staff
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/major-template.xlsx')}
+                  onClick={() => handleDownload('template-subjects.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Mata Pelajaran
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/major-template.xlsx')}
+                  onClick={() => handleDownload('template-extracurriculars.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Ekstrakulikuler
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/major-template.xlsx')}
+                  onClick={() => handleDownload('template-rooms.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Ruangan
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/major-template.xlsx')}
+                  onClick={() => handleDownload('template-departments.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Jurusan
                 </button>
                 <button
-                  onClick={() => handleDownload('/path/to/major-template.xlsx')}
+                  onClick={() => handleDownload('template-classrooms.xlsx')}
                   className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Unduh Template Data Kelas
@@ -187,23 +188,23 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="bg-gray-200 p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Akun</div>
+          <div className="bg-gray-300 p-4 shadow rounded-lg">
+            <div className="text-md text-gray-500">Total Akun</div>
             <div className="text-2xl font-bold">{dashboardData.total_users}</div>
           </div>
-          <div className="bg-gray-200 p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Data Siswa</div>
+          <div className="bg-gray-300 p-4 shadow rounded-lg">
+            <div className="text-md text-gray-500">Total Data Siswa</div>
             <div className="text-2xl font-bold">{dashboardData.total_students}</div>
           </div>
-          <div className="bg-gray-200 p-4 shadow rounded-lg">
-            <div className="text-sm text-gray-500">Total Data Guru dan Staff</div>
+          <div className="bg-gray-300 p-4 shadow rounded-lg">
+            <div className="text-md text-gray-500">Total Data Guru dan Staff</div>
             <div className="text-2xl font-bold">{dashboardData.total_employees}</div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-8">
-          <div className="bg-gray-100 p-4 shadow rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-8 mb-10">
+          <div className="bg-gray-200 p-4 shadow rounded-lg">
             <Line data={chartData} options={lineChartOptions} />
-            <div className="mt-2 text-sm text-gray-500">Total Request tahunan</div>
+            <div className="mt-2 text-md text-gray-500">Total Request tahunan</div>
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { Routes, Route } from "react-router-dom";
 
 const Login = lazy(() => import('../auth/Login.jsx'));
 const Loader = lazy(() => import('../auth/Loader.jsx'));
+const NotFound = lazy(() => import('../components/NotFound.jsx'));
+
 
 
 //Admin private routes
@@ -159,6 +161,15 @@ export default function RoutesIndex() {
                         </PrivateRoutes>
                     </Suspense>
 
+                }
+            />
+
+            <Route
+                path="*"
+                element={
+                    <Suspense fallback={<Loader />}>
+                        <NotFound />
+                    </Suspense>
                 }
             />
 

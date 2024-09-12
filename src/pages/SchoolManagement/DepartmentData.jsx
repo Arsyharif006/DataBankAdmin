@@ -272,7 +272,7 @@ const DepartmenData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length < 0 ? (
+              {currentData.length > 0 ? (
               currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 border-b text-center">

@@ -249,7 +249,7 @@ const CourseData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.length < 0 ? (
+            {currentData.length > 0 ? (
               currentData.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="py-3 px-4 text-center border-b">
@@ -280,7 +280,7 @@ const CourseData = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="py-4 text-center text-gray-500">
+                <td colSpan="5" className="py-4 text-center text-gray-500">
                   Tidak ada data yang ditemukan.
                 </td>
               </tr>
